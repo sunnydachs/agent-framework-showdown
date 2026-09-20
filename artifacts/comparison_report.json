@@ -1,0 +1,120 @@
+{
+ "strands": {
+  "framework": "strands",
+  "n_llm_calls": 4,
+  "total_tokens": 3506,
+  "total_latency_s": 4.7,
+  "total_reasoning_chars": 277,
+  "calls": [
+   {
+    "msgs_in": 2,
+    "elapsed_s": 0.874,
+    "tools_called": [
+     "get_headlines"
+    ],
+    "finish": "tool_calls",
+    "tokens": 518,
+    "has_reasoning": true,
+    "content_len": 0
+   },
+   {
+    "msgs_in": 4,
+    "elapsed_s": 1.326,
+    "tools_called": [
+     "check_word_count"
+    ],
+    "finish": "tool_calls",
+    "tokens": 840,
+    "has_reasoning": true,
+    "content_len": 630
+   },
+   {
+    "msgs_in": 6,
+    "elapsed_s": 1.699,
+    "tools_called": [
+     "check_word_count"
+    ],
+    "finish": "tool_calls",
+    "tokens": 1014,
+    "has_reasoning": true,
+    "content_len": 65
+   },
+   {
+    "msgs_in": 8,
+    "elapsed_s": 0.846,
+    "tools_called": [],
+    "finish": "stop",
+    "tokens": 1134,
+    "has_reasoning": false,
+    "content_len": 633
+   }
+  ]
+ },
+ "langgraph": {
+  "framework": "langgraph",
+  "n_llm_calls": 1,
+  "total_tokens": 1966,
+  "total_latency_s": 5.0,
+  "total_reasoning_chars": 6163,
+  "calls": [
+   {
+    "msgs_in": 1,
+    "elapsed_s": 5.002,
+    "tools_called": [],
+    "finish": "stop",
+    "tokens": 1966,
+    "has_reasoning": true,
+    "content_len": 746
+   }
+  ]
+ },
+ "crewai": {
+  "framework": "crewai",
+  "n_llm_calls": 4,
+  "total_tokens": 2533,
+  "total_latency_s": 3.9,
+  "total_reasoning_chars": 363,
+  "calls": [
+   {
+    "msgs_in": 2,
+    "elapsed_s": 0.951,
+    "tools_called": [
+     "fetch_headlines"
+    ],
+    "finish": "tool_calls",
+    "tokens": 474,
+    "has_reasoning": true,
+    "content_len": 0
+   },
+   {
+    "msgs_in": 4,
+    "elapsed_s": 0.927,
+    "tools_called": [],
+    "finish": "stop",
+    "tokens": 601,
+    "has_reasoning": false,
+    "content_len": 356
+   },
+   {
+    "msgs_in": 2,
+    "elapsed_s": 1.032,
+    "tools_called": [
+     "count_words"
+    ],
+    "finish": "tool_calls",
+    "tokens": 646,
+    "has_reasoning": true,
+    "content_len": 0
+   },
+   {
+    "msgs_in": 4,
+    "elapsed_s": 1.02,
+    "tools_called": [],
+    "finish": "stop",
+    "tokens": 812,
+    "has_reasoning": true,
+    "content_len": 792
+   }
+  ]
+ }
+}
