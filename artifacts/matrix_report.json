@@ -1,0 +1,535 @@
+{
+ "runs": [
+  {
+   "n_llm_calls": 4,
+   "tokens": 2531,
+   "latency_s": 3.779,
+   "verify_calls": 1,
+   "wc_results": [],
+   "wrong_arg_calls": 0,
+   "final_words": 96,
+   "reasoning_chars": 356,
+   "file": "llm_calls_crewai__crewai__base_run1.jsonl",
+   "framework": "crewai",
+   "label": "crewai__base_run1"
+  },
+  {
+   "n_llm_calls": 4,
+   "tokens": 2533,
+   "latency_s": 3.6950000000000003,
+   "verify_calls": 1,
+   "wc_results": [],
+   "wrong_arg_calls": 0,
+   "final_words": 96,
+   "reasoning_chars": 363,
+   "file": "llm_calls_crewai__crewai__base_run2.jsonl",
+   "framework": "crewai",
+   "label": "crewai__base_run2"
+  },
+  {
+   "n_llm_calls": 4,
+   "tokens": 2533,
+   "latency_s": 3.8920000000000003,
+   "verify_calls": 1,
+   "wc_results": [],
+   "wrong_arg_calls": 0,
+   "final_words": 96,
+   "reasoning_chars": 363,
+   "file": "llm_calls_crewai__crewai__base_run3.jsonl",
+   "framework": "crewai",
+   "label": "crewai__base_run3"
+  },
+  {
+   "n_llm_calls": 4,
+   "tokens": 2533,
+   "latency_s": 3.743,
+   "verify_calls": 1,
+   "wc_results": [],
+   "wrong_arg_calls": 0,
+   "final_words": 96,
+   "reasoning_chars": 363,
+   "file": "llm_calls_crewai__crewai__drift_run1.jsonl",
+   "framework": "crewai",
+   "label": "crewai__drift_run1"
+  },
+  {
+   "n_llm_calls": 4,
+   "tokens": 2533,
+   "latency_s": 3.59,
+   "verify_calls": 1,
+   "wc_results": [],
+   "wrong_arg_calls": 0,
+   "final_words": 96,
+   "reasoning_chars": 363,
+   "file": "llm_calls_crewai__crewai__drift_run2.jsonl",
+   "framework": "crewai",
+   "label": "crewai__drift_run2"
+  },
+  {
+   "n_llm_calls": 4,
+   "tokens": 2533,
+   "latency_s": 3.585,
+   "verify_calls": 1,
+   "wc_results": [],
+   "wrong_arg_calls": 0,
+   "final_words": 96,
+   "reasoning_chars": 363,
+   "file": "llm_calls_crewai__crewai__drift_run3.jsonl",
+   "framework": "crewai",
+   "label": "crewai__drift_run3"
+  },
+  {
+   "n_llm_calls": 4,
+   "tokens": 2531,
+   "latency_s": 4.02,
+   "verify_calls": 1,
+   "wc_results": [],
+   "wrong_arg_calls": 0,
+   "final_words": 99,
+   "reasoning_chars": 316,
+   "file": "llm_calls_crewai__crewai__tight_run1.jsonl",
+   "framework": "crewai",
+   "label": "crewai__tight_run1"
+  },
+  {
+   "n_llm_calls": 4,
+   "tokens": 2531,
+   "latency_s": 3.596,
+   "verify_calls": 1,
+   "wc_results": [],
+   "wrong_arg_calls": 0,
+   "final_words": 99,
+   "reasoning_chars": 316,
+   "file": "llm_calls_crewai__crewai__tight_run2.jsonl",
+   "framework": "crewai",
+   "label": "crewai__tight_run2"
+  },
+  {
+   "n_llm_calls": 4,
+   "tokens": 2539,
+   "latency_s": 3.8080000000000003,
+   "verify_calls": 1,
+   "wc_results": [],
+   "wrong_arg_calls": 0,
+   "final_words": 101,
+   "reasoning_chars": 317,
+   "file": "llm_calls_crewai__crewai__tight_run3.jsonl",
+   "framework": "crewai",
+   "label": "crewai__tight_run3"
+  },
+  {
+   "n_llm_calls": 1,
+   "tokens": 2233,
+   "latency_s": 5.813,
+   "verify_calls": 0,
+   "wc_results": [],
+   "wrong_arg_calls": 0,
+   "final_words": 96,
+   "reasoning_chars": 7291,
+   "file": "llm_calls_langgraph__langgraph__base_run1.jsonl",
+   "framework": "langgraph",
+   "label": "langgraph__base_run1"
+  },
+  {
+   "n_llm_calls": 1,
+   "tokens": 2796,
+   "latency_s": 5.788,
+   "verify_calls": 0,
+   "wc_results": [],
+   "wrong_arg_calls": 0,
+   "final_words": 92,
+   "reasoning_chars": 9162,
+   "file": "llm_calls_langgraph__langgraph__base_run2.jsonl",
+   "framework": "langgraph",
+   "label": "langgraph__base_run2"
+  },
+  {
+   "n_llm_calls": 1,
+   "tokens": 993,
+   "latency_s": 2.381,
+   "verify_calls": 0,
+   "wc_results": [],
+   "wrong_arg_calls": 0,
+   "final_words": 83,
+   "reasoning_chars": 3710,
+   "file": "llm_calls_langgraph__langgraph__base_run3.jsonl",
+   "framework": "langgraph",
+   "label": "langgraph__base_run3"
+  },
+  {
+   "n_llm_calls": 1,
+   "tokens": 2381,
+   "latency_s": 5.073,
+   "verify_calls": 0,
+   "wc_results": [],
+   "wrong_arg_calls": 0,
+   "final_words": 99,
+   "reasoning_chars": 8180,
+   "file": "llm_calls_langgraph__langgraph__drift_run1.jsonl",
+   "framework": "langgraph",
+   "label": "langgraph__drift_run1"
+  },
+  {
+   "n_llm_calls": 1,
+   "tokens": 993,
+   "latency_s": 2.679,
+   "verify_calls": 0,
+   "wc_results": [],
+   "wrong_arg_calls": 0,
+   "final_words": 83,
+   "reasoning_chars": 3710,
+   "file": "llm_calls_langgraph__langgraph__drift_run2.jsonl",
+   "framework": "langgraph",
+   "label": "langgraph__drift_run2"
+  },
+  {
+   "n_llm_calls": 1,
+   "tokens": 2112,
+   "latency_s": 4.656,
+   "verify_calls": 0,
+   "wc_results": [],
+   "wrong_arg_calls": 0,
+   "final_words": 91,
+   "reasoning_chars": 7189,
+   "file": "llm_calls_langgraph__langgraph__drift_run3.jsonl",
+   "framework": "langgraph",
+   "label": "langgraph__drift_run3"
+  },
+  {
+   "n_llm_calls": 2,
+   "tokens": 5496,
+   "latency_s": 11.998000000000001,
+   "verify_calls": 0,
+   "wc_results": [],
+   "wrong_arg_calls": 0,
+   "final_words": 103,
+   "reasoning_chars": 17920,
+   "file": "llm_calls_langgraph__langgraph__tight_run1.jsonl",
+   "framework": "langgraph",
+   "label": "langgraph__tight_run1"
+  },
+  {
+   "n_llm_calls": 2,
+   "tokens": 5497,
+   "latency_s": 12.0,
+   "verify_calls": 0,
+   "wc_results": [],
+   "wrong_arg_calls": 0,
+   "final_words": 101,
+   "reasoning_chars": 18652,
+   "file": "llm_calls_langgraph__langgraph__tight_run2.jsonl",
+   "framework": "langgraph",
+   "label": "langgraph__tight_run2"
+  },
+  {
+   "n_llm_calls": 2,
+   "tokens": 4794,
+   "latency_s": 11.503,
+   "verify_calls": 0,
+   "wc_results": [],
+   "wrong_arg_calls": 0,
+   "final_words": 100,
+   "reasoning_chars": 16207,
+   "file": "llm_calls_langgraph__langgraph__tight_run3.jsonl",
+   "framework": "langgraph",
+   "label": "langgraph__tight_run3"
+  },
+  {
+   "n_llm_calls": 3,
+   "tokens": 2459,
+   "latency_s": 4.045,
+   "verify_calls": 1,
+   "wc_results": [
+    99
+   ],
+   "wrong_arg_calls": 0,
+   "final_words": 99,
+   "reasoning_chars": 251,
+   "file": "llm_calls_strands__strands__base_run1.jsonl",
+   "framework": "strands",
+   "label": "strands__base_run1"
+  },
+  {
+   "n_llm_calls": 3,
+   "tokens": 2252,
+   "latency_s": 4.256,
+   "verify_calls": 1,
+   "wc_results": [
+    100
+   ],
+   "wrong_arg_calls": 0,
+   "final_words": null,
+   "reasoning_chars": 1257,
+   "file": "llm_calls_strands__strands__base_run2.jsonl",
+   "framework": "strands",
+   "label": "strands__base_run2"
+  },
+  {
+   "n_llm_calls": 3,
+   "tokens": 2400,
+   "latency_s": 4.233,
+   "verify_calls": 1,
+   "wc_results": [
+    85
+   ],
+   "wrong_arg_calls": 0,
+   "final_words": 85,
+   "reasoning_chars": 401,
+   "file": "llm_calls_strands__strands__base_run3.jsonl",
+   "framework": "strands",
+   "label": "strands__base_run3"
+  },
+  {
+   "n_llm_calls": 3,
+   "tokens": 2553,
+   "latency_s": 3.974,
+   "verify_calls": 1,
+   "wc_results": [
+    94
+   ],
+   "wrong_arg_calls": 0,
+   "final_words": 94,
+   "reasoning_chars": 440,
+   "file": "llm_calls_strands__strands__drift_run1.jsonl",
+   "framework": "strands",
+   "label": "strands__drift_run1"
+  },
+  {
+   "n_llm_calls": 3,
+   "tokens": 2420,
+   "latency_s": 2.855,
+   "verify_calls": 1,
+   "wc_results": [
+    93
+   ],
+   "wrong_arg_calls": 0,
+   "final_words": 93,
+   "reasoning_chars": 304,
+   "file": "llm_calls_strands__strands__drift_run2.jsonl",
+   "framework": "strands",
+   "label": "strands__drift_run2"
+  },
+  {
+   "n_llm_calls": 3,
+   "tokens": 2411,
+   "latency_s": 3.2909999999999995,
+   "verify_calls": 1,
+   "wc_results": [
+    105
+   ],
+   "wrong_arg_calls": 0,
+   "final_words": 105,
+   "reasoning_chars": 1336,
+   "file": "llm_calls_strands__strands__drift_run3.jsonl",
+   "framework": "strands",
+   "label": "strands__drift_run3"
+  },
+  {
+   "n_llm_calls": 5,
+   "tokens": 5263,
+   "latency_s": 5.827,
+   "verify_calls": 3,
+   "wc_results": [
+    86,
+    86,
+    103,
+    86,
+    103,
+    103
+   ],
+   "wrong_arg_calls": 0,
+   "final_words": 103,
+   "reasoning_chars": 1407,
+   "file": "llm_calls_strands__strands__tight_run1.jsonl",
+   "framework": "strands",
+   "label": "strands__tight_run1"
+  },
+  {
+   "n_llm_calls": 3,
+   "tokens": 2535,
+   "latency_s": 3.309,
+   "verify_calls": 1,
+   "wc_results": [
+    104
+   ],
+   "wrong_arg_calls": 0,
+   "final_words": 104,
+   "reasoning_chars": 372,
+   "file": "llm_calls_strands__strands__tight_run2.jsonl",
+   "framework": "strands",
+   "label": "strands__tight_run2"
+  },
+  {
+   "n_llm_calls": 4,
+   "tokens": 4132,
+   "latency_s": 4.890000000000001,
+   "verify_calls": 2,
+   "wc_results": [
+    107,
+    107,
+    106
+   ],
+   "wrong_arg_calls": 0,
+   "final_words": 93,
+   "reasoning_chars": 1031,
+   "file": "llm_calls_strands__strands__tight_run3.jsonl",
+   "framework": "strands",
+   "label": "strands__tight_run3"
+  }
+ ],
+ "aggregates": {
+  "crewai/crewai__base": {
+   "n": 3,
+   "verify_rate": 1.0,
+   "schema_drift_failures": 0,
+   "tokens_mean": 2532,
+   "latency_mean_s": 3.8,
+   "llm_calls": [
+    4,
+    4,
+    4
+   ],
+   "final_words": [
+    96,
+    96,
+    96
+   ]
+  },
+  "crewai/crewai__drift": {
+   "n": 3,
+   "verify_rate": 1.0,
+   "schema_drift_failures": 0,
+   "tokens_mean": 2533,
+   "latency_mean_s": 3.6,
+   "llm_calls": [
+    4,
+    4,
+    4
+   ],
+   "final_words": [
+    96,
+    96,
+    96
+   ]
+  },
+  "crewai/crewai__tight": {
+   "n": 3,
+   "verify_rate": 1.0,
+   "schema_drift_failures": 0,
+   "tokens_mean": 2534,
+   "latency_mean_s": 3.8,
+   "llm_calls": [
+    4,
+    4,
+    4
+   ],
+   "final_words": [
+    99,
+    99,
+    101
+   ]
+  },
+  "langgraph/langgraph__base": {
+   "n": 3,
+   "verify_rate": 0.0,
+   "schema_drift_failures": 0,
+   "tokens_mean": 2007,
+   "latency_mean_s": 4.7,
+   "llm_calls": [
+    1,
+    1,
+    1
+   ],
+   "final_words": [
+    96,
+    92,
+    83
+   ]
+  },
+  "langgraph/langgraph__drift": {
+   "n": 3,
+   "verify_rate": 0.0,
+   "schema_drift_failures": 0,
+   "tokens_mean": 1829,
+   "latency_mean_s": 4.1,
+   "llm_calls": [
+    1,
+    1,
+    1
+   ],
+   "final_words": [
+    99,
+    83,
+    91
+   ]
+  },
+  "langgraph/langgraph__tight": {
+   "n": 3,
+   "verify_rate": 0.0,
+   "schema_drift_failures": 0,
+   "tokens_mean": 5262,
+   "latency_mean_s": 11.8,
+   "llm_calls": [
+    2,
+    2,
+    2
+   ],
+   "final_words": [
+    103,
+    101,
+    100
+   ]
+  },
+  "strands/strands__base": {
+   "n": 3,
+   "verify_rate": 1.0,
+   "schema_drift_failures": 0,
+   "tokens_mean": 2370,
+   "latency_mean_s": 4.2,
+   "llm_calls": [
+    3,
+    3,
+    3
+   ],
+   "final_words": [
+    99,
+    null,
+    85
+   ]
+  },
+  "strands/strands__drift": {
+   "n": 3,
+   "verify_rate": 1.0,
+   "schema_drift_failures": 0,
+   "tokens_mean": 2461,
+   "latency_mean_s": 3.4,
+   "llm_calls": [
+    3,
+    3,
+    3
+   ],
+   "final_words": [
+    94,
+    93,
+    105
+   ]
+  },
+  "strands/strands__tight": {
+   "n": 3,
+   "verify_rate": 1.0,
+   "schema_drift_failures": 0,
+   "tokens_mean": 3977,
+   "latency_mean_s": 4.7,
+   "llm_calls": [
+    5,
+    3,
+    4
+   ],
+   "final_words": [
+    103,
+    104,
+    93
+   ]
+  }
+ }
+}

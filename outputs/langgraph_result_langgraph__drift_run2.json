@@ -1,0 +1,10 @@
+{
+ "framework": "langgraph",
+ "run_label": "langgraph__drift_run2",
+ "scenario": "drift",
+ "tool_variant": "drift",
+ "elapsed_s": 2.7,
+ "result": "The AI agent landscape is rapidly maturing as open-source frameworks hit a major production milestone, with adoption tripling across the industry. Startups are quietly replacing hand-coded orchestration with model-driven agents, shifting the development paradigm. Meanwhile, tool-calling reliability has emerged as the critical new benchmark for evaluating frontier models. On the enterprise front, multi-agent swarms are moving from early-stage demos into regulated workflows. To manage this growing complexity, new observability standards are emerging to trace agent decisions end to end, ensuring transparency and accountability.",
+ "word_count": 83,
+ "revisions": 0
+}

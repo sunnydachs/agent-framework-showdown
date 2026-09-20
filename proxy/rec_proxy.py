@@ -49,17 +49,20 @@ class Handler(BaseHTTPRequestHandler):
         length = int(self.headers.get("Content-Length") or 0)
         return self.rfile.read(length) if length else b""
 
-    def _record(self, framework, request_body, response_body, elapsed, status):
+    def _record(self, framework, run_label, request_body, response_body, elapsed, status):
         rec = {
             "id": uuid.uuid4().hex[:12],
             "ts": time.time(),
             "framework": framework,
+            "run_label": run_label,
             "status": status,
             "elapsed_s": round(elapsed, 3),
             "request": request_body,
             "response": response_body,
         }
         out = TRACE_DIR / f"llm_calls_{framework}.jsonl"
+        if run_label:
+            out = TRACE_DIR / f"llm_calls_{framework}__{run_label}.jsonl"
         with open(out, "a") as f:
             f.write(json.dumps(rec, ensure_ascii=False) + "\n")
 
@@ -85,16 +88,22 @@ class Handler(BaseHTTPRequestHandler):
             resp_body = e.read()
             status = e.code
         except Exception as e:  # network error, etc.
-            self._record(framework, None, {"proxy_error": str(e)}, time.time() - t0, 0)
+            self._record(framework, "", None, {"proxy_error": str(e)}, time.time() - t0, 0)
             self.send_error(502, str(e))
             return
 
         elapsed = time.time() - t0
-        # Parse for recording (request may fail to parse; record raw anyway)
+        # label can also arrive via request body (some clients strip custom
+        # headers); read it before parsing below
         try:
             req_json = json.loads(body)
         except Exception:
             req_json = {"_raw": body.decode("utf-8", "replace")}
+        label = self.headers.get("X-Run-Label", "") or req_json.pop("run_label", "")
+        # run labels carry the framework name as prefix: "<fw>__<scenario>_run<N>"
+        if framework == "unknown" and "__" in label:
+            framework = label.split("__", 1)[0]
+            req_json["inferred_framework"] = framework
         try:
             resp_json = json.loads(resp_body)
         except Exception:
@@ -103,7 +112,7 @@ class Handler(BaseHTTPRequestHandler):
         # never leak the API key into traces
         req_json.pop("api_key", None)
 
-        self._record(framework, req_json, resp_json, elapsed, status)
+        self._record(framework, label, req_json, resp_json, elapsed, status)
 
         self.send_response(status)
         self.send_header("Content-Type", "application/json")
