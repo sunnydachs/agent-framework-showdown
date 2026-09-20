@@ -1,0 +1,8 @@
+{
+ "framework": "strands",
+ "run_label": "strands__tight_run2",
+ "scenario": "tight",
+ "tool_variant": "base",
+ "elapsed_s": 3.88,
+ "result": "Today's AI landscape is shifting from experimentation to real-world deployment. Open-source agent frameworks are hitting a production milestone, with adoption tripling as organizations move beyond prototypes. Startups are increasingly replacing hand-coded orchestration with model-driven agents, signaling a fundamental rethinking of how intelligent systems are built. Meanwhile, tool-calling reliability has become the new benchmark for frontier models, pushing developers to focus on practical execution rather than raw capabilities. Multi-agent swarms are making the leap from demos into regulated enterprise workflows, and as these systems grow more complex, observability standards are emerging to trace agent decisions end to end — ensuring accountability where it matters most.\n"
+}

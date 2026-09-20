@@ -1,0 +1,19 @@
+{
+ "date": "2026-09-20",
+ "model": "inclusionai/ling-3.0-flash-fin:free (Novita)",
+ "n_runs": 27,
+ "scenarios": {
+  "base": "80-120 word band",
+  "tight": "95-105 word band (forces verify/revise loop)",
+  "drift": "word_count schema renamed text->content (models had to follow the new schema)"
+ },
+ "key_findings": [
+  "CrewAI output variance = 0 words in base AND drift (96/96/96 identical) - fully deterministic-looking because temperature=0 + role prompts dominate; but its LLM call structure is fixed (4 calls always).",
+  "LangGraph base variance = 13 words (96/92/83) - HIGHER variance in single-shot mode: the draft word count is left to the model's judgment with no verification loop in base scenario.",
+  "LangGraph tight variance = 3 words (103/101/100) - the explicit graph loop pulled variance down 13 -> 3 (77% reduction) at the cost of 2x tokens (2007 -> 5262) and 2.5x latency (4.7s -> 11.8s). This is THE quantitative demonstration of 'explicit control buys determinism'.",
+  "Strands: self-correcting loop fired in all 3 tight runs (LLM calls [5,3,4] = variable depth, model decides when done); final words [103,104,93] spread 11 - the model-driven loop also reduced variance but kept flexibility (variable call count).",
+  "Strands base run1-2: model skipped verification on first pass in run1 (earlier observation) but run2-3 called it - nondeterminism is inherent to model-driven design.",
+  "Schema drift: ALL frameworks' models followed the NEW schema (0 wrong-arg calls in drift) - model-side adaptation was perfect for a simple rename; no framework needed error recovery.",
+  "Tokens: CrewAI 2532 stable / LangGraph 2007 (base) but 5262 (tight) / Strands 2370 (base) 3977 (tight)."
+ ]
+}

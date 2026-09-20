@@ -2,6 +2,12 @@
 
 The developer defines every node, every edge, and the loop condition.
 The model only makes decisions INSIDE nodes (writing the draft).
+Scenarios:
+  SCENARIO=base  : 80-120 word band
+  SCENARIO=tight : 95-105 word band with a revision cap (forces the loop)
+  TOOL_VARIANT=drift: word_count takes `content` (drift only affects
+      Strands/CrewAI tool-callers; LangGraph calls tools in code, so drift
+      is patched at the call site - that IS the difference being tested)
 """
 import json
 import os
@@ -16,13 +22,29 @@ sys.path.insert(0, str(ROOT / "common"))
 from langchain_openai import ChatOpenAI  # noqa: E402
 from langgraph.graph import END, StateGraph  # noqa: E402
 
-from tools import fetch_headlines, word_count  # noqa: E402
+TOOL_VARIANT = os.environ.get("TOOL_VARIANT", "base")
+if TOOL_VARIANT == "drift":
+    from tools_drift import fetch_headlines, word_count  # noqa: E402
+else:
+    from tools import fetch_headlines, word_count  # noqa: E402
+
+SCENARIO = os.environ.get("SCENARIO", "base")
+WORD_MIN = int(os.environ.get("WORD_MIN", 95 if SCENARIO == "tight" else 80))
+WORD_MAX = int(os.environ.get("WORD_MAX", 105 if SCENARIO == "tight" else 120))
+MAX_REVISIONS = int(os.environ.get("MAX_REVISIONS", 4))
 
 MODEL = os.environ.get("MODEL", "inclusionai/ling-3.0-flash-fin:free")
 BASE_URL = os.environ.get("OPENAI_BASE_URL", "http://127.0.0.1:8118/v1")
 API_KEY = os.environ.get("OPENAI_API_KEY", "dummy-key")
+RUN_LABEL = os.environ.get("RUN_LABEL", "")
 
-llm = ChatOpenAI(model=MODEL, base_url=BASE_URL, api_key=API_KEY, temperature=0)
+llm = ChatOpenAI(
+    model=MODEL,
+    base_url=BASE_URL,
+    api_key=API_KEY,
+    temperature=0,
+    default_headers={"X-Run-Label": RUN_LABEL},
+)
 
 
 class DigestState(TypedDict):
@@ -55,16 +77,18 @@ def verify_word_count(state: DigestState) -> dict:
 
 
 def should_revise(state: DigestState) -> str:
+    if state["revisions"] >= MAX_REVISIONS:
+        return "give_up"  # explicit escape hatch: the graph guarantees termination
     wc = state["wc"]
-    if wc < 80:
+    if wc < WORD_MIN:
         return "too_short"
-    if wc > 120:
+    if wc > WORD_MAX:
         return "too_long"
     return "ok"
 
 
 def revise_draft(state: DigestState) -> dict:
-    direction = "expand" if state["wc"] < 80 else "shorten"
+    direction = "expand" if state["wc"] < WORD_MIN else "shorten"
     prompt = (
         f"The following digest is {state['wc']} words. Please {direction} it to about 100 words.\n"
         f"Output the revised digest text only.\n\n{state['draft']}"
@@ -85,7 +109,7 @@ workflow.add_edge("write", "verify")
 workflow.add_conditional_edges(
     "verify",
     should_revise,
-    {"too_short": "revise", "too_long": "revise", "ok": END},
+    {"too_short": "revise", "too_long": "revise", "ok": END, "give_up": END},
 )
 workflow.add_edge("revise", "verify")
 
@@ -97,19 +121,21 @@ elapsed = time.time() - t0
 
 out_dir = ROOT / "outputs"
 out_dir.mkdir(exist_ok=True)
-(out_dir / "langgraph_result.json").write_text(
+(out_dir / f"langgraph_result_{RUN_LABEL or 'default'}.json").write_text(
     json.dumps(
         {
             "framework": "langgraph",
+            "run_label": RUN_LABEL,
+            "scenario": SCENARIO,
+            "tool_variant": TOOL_VARIANT,
             "elapsed_s": round(elapsed, 2),
             "result": final["draft"],
             "word_count": final["wc"],
             "revisions": final["revisions"],
-            "n_llm_calls": len(trace_llm_calls) if False else None,
         },
         ensure_ascii=False,
         indent=1,
     )
 )
-print(f"[langgraph] done in {elapsed:.1f}s, wc={final['wc']}, revisions={final['revisions']}")
-print(final["draft"][:600])
+print(f"[langgraph] done in {elapsed:.1f}s, wc={final['wc']}, revisions={final['revisions']} ({RUN_LABEL})")
+print(final["draft"][:400])
