@@ -2,3 +2,13 @@ __pycache__/
 *.pyc
 .venv-*/
 .env
+
+# generated analysis outputs (rebuild with runs/*.py from traces/)
+artifacts/
+
+# editor/OS noise
+.local/
+
+# non-experiment traces (initial trials / smoke tests)
+traces/run1/
+traces/smoke/

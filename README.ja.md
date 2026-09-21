@@ -108,10 +108,11 @@ python3 runs/analyze_matrix.py   # -> artifacts/matrix_report.json
 frameworks/   フレームワーク別実装 (Strands / LangGraph / CrewAI)
 common/       共通の決定論的ツール2個
 proxy/        記録プロキシ + SSE再構築 + 初回レポート
-runs/         27ランマトリクス実行と集計
-traces/       記録されたLLM通信 (ランごとに1ファイル)
+runs/         マトリクス実行 (base 27ラン + complex 9ラン) と集計
+traces/       記録されたLLM通信 (ランごとに1ファイル) - 一次データ
 outputs/      各フレームワークが書き出すラン別結果JSON
-artifacts/    matrix_report.json, findings_summary.json
+artifacts/    git管理外: 解析成果物。runs/*.py で再生成できる
+              (analyze_tax, analyze_scaling, correct_findings, analyze_matrix)
 ```
 
 ## ライセンス

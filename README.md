@@ -108,10 +108,11 @@ Same shape across frameworks is what makes the comparison honest — a single pr
 frameworks/   one implementation per framework (Strands / LangGraph / CrewAI)
 common/       the two shared deterministic tools
 proxy/        recorder proxy + SSE reassembly + first-run report
-runs/         27-run matrix driver and aggregation
-traces/       recorded LLM traffic (one file per run)
+runs/         matrix drivers (27-run base + 9-run complex) and aggregation
+traces/       recorded LLM traffic (one file per run) - the primary data
 outputs/      per-run result JSON written by each framework
-artifacts/    matrix_report.json, findings_summary.json
+artifacts/    NOT tracked: analysis outputs, rebuild with runs/*.py
+              (analyze_tax, analyze_scaling, correct_findings, analyze_matrix)
 ```
 
 ## License
