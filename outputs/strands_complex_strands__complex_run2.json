@@ -1,0 +1,9 @@
+{
+ "framework": "strands",
+ "task": "complex",
+ "run_label": "strands__complex_run2",
+ "scenario": "base",
+ "tool_variant": "base",
+ "elapsed_s": 3.62,
+ "result": ""
+}

@@ -1,0 +1,12 @@
+{
+ "framework": "langgraph",
+ "task": "complex",
+ "run_label": "langgraph__complex_run3",
+ "scenario": "base",
+ "tool_variant": "base",
+ "elapsed_s": 4.79,
+ "result": "The AI agent landscape is rapidly maturing, transitioning from experimental phases into robust, real-world production environments. Open-source frameworks have hit a significant milestone as adoption triples, driven by model-driven agents that quietly replace hand-coded orchestration within modern startups. Meanwhile, tool-calling reliability has officially emerged as the new benchmark for frontier models, ensuring more precise and autonomous execution. Multi-agent swarms are also advancing rapidly, moving from simple demonstrations to fully regulated enterprise workflows. To support this complex deployment, observability standards are finally emerging, enabling end-to-end tracing of agent decisions and fostering greater trust in autonomous systems.",
+ "winner": "AI agents",
+ "word_count": 95,
+ "revisions": 0
+}
