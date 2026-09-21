@@ -28,7 +28,7 @@ SCENARIO = os.environ.get("SCENARIO", "base")
 WORD_MIN = int(os.environ.get("WORD_MIN", 95 if SCENARIO == "tight" else 80))
 WORD_MAX = int(os.environ.get("WORD_MAX", 105 if SCENARIO == "tight" else 120))
 
-MODEL = os.environ.get("MODEL", "inclusionai/ling-3.0-flash-fin:free")
+MODEL = os.environ.get("MODEL", "your-model-id-here")
 BASE_URL = os.environ.get("OPENAI_BASE_URL", "http://127.0.0.1:8118/v1")
 RUN_LABEL = os.environ.get("RUN_LABEL", "")
 

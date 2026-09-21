@@ -105,7 +105,7 @@ def main():
 
     print("=" * 72)
     print("NONDETERMINISM & RESILIENCE REPORT v2 (schema-aware drift detection)")
-    print("model: ling-3.0-flash-fin:free, 3 runs per cell, 27 runs total")
+    print("model: (see trace metadata for the exact model), 3 runs per cell, 27 runs total")
     print("=" * 72)
     for key in sorted(agg):
         fw, scenario = key
