@@ -1,0 +1,8 @@
+{
+ "framework": "crewai",
+ "task": "hitl",
+ "approval_mode": "reject",
+ "run_label": "crewai__hitl_reject_run2",
+ "elapsed_s": 13.37,
+ "result": "Open-source agent frameworks have hit production maturity, while model-driven agents quietly replace hand-coded orchestration. Tool-calling reliability has become the new benchmark, and multi-agent swarms are moving into regulated enterprise workflows. As observability standards emerge for tracing agent decisions, the industry shifts toward accountable automation.\n\n*Caution: Rapid deployment carries unverified operational risks.*"
+}

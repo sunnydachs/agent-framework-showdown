@@ -1,0 +1,7 @@
+{
+ "framework": "crewai",
+ "task": "structured",
+ "run_label": "crewai__structured_run3",
+ "elapsed_s": 10.19,
+ "result": "{\"summary\": \"Open-source agent frameworks have officially reached a major production milestone, marking a significant shift in the artificial intelligence industry. Model-driven agents are quietly replacing traditional hand-coded orchestration, effectively streamlining complex development processes. As these autonomous systems continue to evolve, tool-calling reliability has become the new benchmark for overall performance. Meanwhile, multi-agent swarms are successfully transitioning into regulated enterprise workflows, signaling broader institutional adoption. To support this rapid growth, observability standards are actively emerging to ensure transparent and accurate tracing of agent decisions. This powerful convergence of reliability, regulation, and observability is fundamentally shaping the future of autonomous AI systems across the globe.\", \"word_count\": 102, \"topics\": [\"Open-source agent frameworks\", \"Model-driven agents\", \"Tool-calling reliability\", \"Multi-agent swarms\", \"Observability standards\"], \"publish_ready\": true}"
+}

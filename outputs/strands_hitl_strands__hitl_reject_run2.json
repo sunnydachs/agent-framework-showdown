@@ -1,0 +1,8 @@
+{
+ "framework": "strands",
+ "task": "hitl",
+ "approval_mode": "reject",
+ "run_label": "strands__hitl_reject_run2",
+ "elapsed_s": 5.32,
+ "result": "The article was **rejected** by the reviewer and was not published. I won't resubmit or publish without further instruction. Let me know if you'd like me to revise the draft or pick a different topic!\n"
+}

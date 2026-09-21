@@ -1,0 +1,14 @@
+{
+ "framework": "langgraph",
+ "task": "hitl",
+ "approval_mode": "reject",
+ "run_label": "langgraph__hitl_reject_run2",
+ "elapsed_s": 4.41,
+ "phase1_s": 4.41,
+ "phase2_resume_s": 0.0,
+ "interrupted": true,
+ "interrupt_payload": "{'request': 'Approve publishing this digest?', 'draft': 'The artificial intelligence agent landscape is rapidly maturing, transitioning from experimental phases into robust, real-world production envi",
+ "approved": false,
+ "published": false,
+ "draft_head": "The artificial intelligence agent landscape is rapidly maturing, transitioning from experimental phases into robust, real-world production environments. Open-source agent frameworks have hit a signifi"
+}
