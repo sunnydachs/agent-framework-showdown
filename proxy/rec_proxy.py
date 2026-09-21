@@ -1,7 +1,8 @@
 """LLM traffic recorder proxy for the agent framework showdown.
 
 All three frameworks are pointed at http://127.0.0.1:8118/v1 (an OpenAI-compatible
-endpoint). The proxy forwards to OpenRouter and records every request/response
+endpoint). The proxy forwards to any OpenAI-compatible upstream
+(LLM_API_KEY + LLM_BASE_URL in .env or env) and records every request/response
 pair as JSONL: raw messages sent by the framework, raw model output, tool calls,
 token usage, latency, and the framework label (via X-Framework header).
 
@@ -23,20 +24,24 @@ ROOT = Path(__file__).resolve().parent.parent
 TRACE_DIR = ROOT / "traces"
 TRACE_DIR.mkdir(exist_ok=True)
 
-OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
-UPSTREAM = os.environ.get("PROXY_UPSTREAM", OPENROUTER_URL)
 
-
-def _load_key():
+def _load_env():
+    env = dict(os.environ)
     env_path = ROOT / ".env"
     if env_path.exists():
         for line in env_path.read_text().splitlines():
-            if line.strip().startswith("OPENROUTER_API_KEY="):
-                return line.strip().split("=", 1)[1].strip().strip('"').strip("'")
-    return os.environ.get("OPENROUTER_API_KEY", "")
+            line = line.strip()
+            if "=" in line and not line.startswith("#"):
+                k, v = line.split("=", 1)
+                env.setdefault(k.strip(), v.strip().strip('"').strip("'"))
+    return env
 
 
-API_KEY = _load_key()
+_env = _load_env()
+UPSTREAM = _env.get(
+    "LLM_BASE_URL", "https://your-openai-compatible-endpoint.example.com"
+).rstrip("/") + "/v1/chat/completions"
+API_KEY = _env.get("LLM_API_KEY", "")
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -77,7 +82,7 @@ class Handler(BaseHTTPRequestHandler):
                 headers={
                     "Authorization": f"Bearer {API_KEY}",
                     "Content-Type": "application/json",
-                    "HTTP-Referer": "https://github.com/arari/agent-framework-showdown",
+                    "HTTP-Referer": "https://github.com/agent-framework-showdown",
                     "X-Title": "agent-framework-showdown",
                 },
             )
@@ -135,7 +140,7 @@ def main():
     ap.add_argument("--port", type=int, default=8118)
     args = ap.parse_args()
     if not API_KEY:
-        print("ERROR: OPENROUTER_API_KEY not found in .env or env", file=sys.stderr)
+        print("ERROR: LLM_API_KEY not found in .env or env", file=sys.stderr)
         sys.exit(1)
     srv = ThreadingHTTPServer(("127.0.0.1", args.port), Handler)
     print(f"[rec-proxy] listening on http://127.0.0.1:{args.port}/v1 -> {UPSTREAM}")

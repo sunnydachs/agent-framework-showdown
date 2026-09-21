@@ -1,6 +1,6 @@
 {
  "date": "2026-09-20",
- "model": "inclusionai/ling-3.0-flash-fin:free (Novita)",
+ "model": "(an anonymous free-tier model at the time of the experiment; see trace metadata)",
  "n_runs": 27,
  "scenarios": {
   "base": "80-120 word band",
