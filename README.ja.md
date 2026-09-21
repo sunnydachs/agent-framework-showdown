@@ -56,6 +56,25 @@ python3 runs/run_matrix.py
 python3 runs/analyze_matrix.py   # -> artifacts/matrix_report.json
 ```
 
+追加実験(45ラン、すべて同一プロキシ経由):
+
+```bash
+# A: フレームワーク税 - 各フレームワークが最初のLLM呼び出しに追加するもの
+python3 runs/analyze_tax.py
+
+# B: タスク形状スケーリング - complex(分岐+2 fetch) vs base、9ラン
+python3 runs/run_complex.py && python3 runs/analyze_scaling.py
+
+# D: HITL - interrupt() vs human_input vs プロンプトのみ、18ラン
+python3 runs/run_hitl.py && python3 runs/analyze_hitl.py
+
+# E: 監査証跡の再構成 - トレースから監査人が何を復元できるか
+python3 runs/analyze_audit.py
+
+# F: 構造化出力の準拠 - strict JSON、9ラン
+python3 runs/run_structured.py && python3 runs/analyze_structured.py
+```
+
 ## 実測結果 (2026年9月、単一モデル、27ラン)
 
 | 項目 | Strands | LangGraph | CrewAI |
