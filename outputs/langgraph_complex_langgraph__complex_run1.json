@@ -1,0 +1,12 @@
+{
+ "framework": "langgraph",
+ "task": "complex",
+ "run_label": "langgraph__complex_run1",
+ "scenario": "base",
+ "tool_variant": "base",
+ "elapsed_s": 3.48,
+ "result": "AI agents are rapidly transitioning from experimental phases into real-world production environments. Open-source agent frameworks are hitting a major milestone as adoption triples across the tech industry. Meanwhile, startups are quietly replacing traditional hand-coded orchestration with more flexible, model-driven agents. In the competitive landscape, tool-calling reliability has emerged as the critical new benchmark for evaluating frontier models. Additionally, multi-agent swarms are moving beyond simple demonstrations to power complex, regulated enterprise workflows. To support this widespread deployment, new observability standards are finally emerging, enabling developers to trace agent decisions end to end with greater confidence.",
+ "winner": "AI agents",
+ "word_count": 94,
+ "revisions": 0
+}

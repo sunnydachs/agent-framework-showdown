@@ -1,0 +1,277 @@
+{
+ "cells": {
+  "base:strands": {
+   "calls": [
+    3,
+    3,
+    3
+   ],
+   "prompt_tokens": [
+    1968,
+    1843,
+    1929
+   ],
+   "completion_tokens": [
+    491,
+    409,
+    471
+   ],
+   "latency_s": [
+    4.04,
+    4.26,
+    4.23
+   ],
+   "first_call_prompt_tokens": [
+    474,
+    474,
+    474
+   ],
+   "first_call_chars": {
+    "sys": 354,
+    "user": 31,
+    "tools": 643
+   },
+   "word_counts": [
+    99,
+    100,
+    85
+   ],
+   "wc_spread": 15,
+   "avg_calls": 3.0,
+   "avg_prompt_tokens": 1913,
+   "avg_completion_tokens": 457,
+   "avg_latency_s": 4.18
+  },
+  "base:langgraph": {
+   "calls": [
+    1,
+    1,
+    1
+   ],
+   "prompt_tokens": [
+    113,
+    113,
+    113
+   ],
+   "completion_tokens": [
+    2120,
+    2683,
+    880
+   ],
+   "latency_s": [
+    5.81,
+    5.79,
+    2.38
+   ],
+   "first_call_prompt_tokens": [
+    113,
+    113,
+    113
+   ],
+   "first_call_chars": {
+    "sys": 0,
+    "user": 477,
+    "tools": 2
+   },
+   "word_counts": [
+    96,
+    92,
+    83
+   ],
+   "wc_spread": 13,
+   "avg_calls": 1.0,
+   "avg_prompt_tokens": 113,
+   "avg_completion_tokens": 1894,
+   "avg_latency_s": 4.66
+  },
+  "base:crewai": {
+   "calls": [
+    4,
+    4,
+    4
+   ],
+   "prompt_tokens": [
+    2101,
+    2101,
+    2101
+   ],
+   "completion_tokens": [
+    430,
+    432,
+    432
+   ],
+   "latency_s": [
+    3.78,
+    3.7,
+    3.89
+   ],
+   "first_call_prompt_tokens": [
+    420,
+    420,
+    420
+   ],
+   "first_call_chars": {
+    "sys": 237,
+    "user": 315,
+    "tools": 445
+   },
+   "word_counts": [
+    96,
+    96,
+    96
+   ],
+   "wc_spread": 0,
+   "avg_calls": 4.0,
+   "avg_prompt_tokens": 2101,
+   "avg_completion_tokens": 431,
+   "avg_latency_s": 3.79
+  },
+  "complex:strands": {
+   "calls": [
+    4,
+    3,
+    3
+   ],
+   "prompt_tokens": [
+    3434,
+    2156,
+    2135
+   ],
+   "completion_tokens": [
+    616,
+    368,
+    364
+   ],
+   "latency_s": [
+    4.69,
+    3.08,
+    3.12
+   ],
+   "first_call_prompt_tokens": [
+    521,
+    521,
+    521
+   ],
+   "first_call_chars": {
+    "sys": 509,
+    "user": 53,
+    "tools": 668
+   },
+   "word_counts": [
+    88,
+    106,
+    87
+   ],
+   "wc_spread": 19,
+   "avg_calls": 3.33,
+   "avg_prompt_tokens": 2575,
+   "avg_completion_tokens": 449,
+   "avg_latency_s": 3.63
+  },
+  "complex:langgraph": {
+   "calls": [
+    1,
+    1,
+    1
+   ],
+   "prompt_tokens": [
+    115,
+    115,
+    115
+   ],
+   "completion_tokens": [
+    1005,
+    715,
+    1727
+   ],
+   "latency_s": [
+    3.46,
+    2.39,
+    4.78
+   ],
+   "first_call_prompt_tokens": [
+    115,
+    115,
+    115
+   ],
+   "first_call_chars": {
+    "sys": 0,
+    "user": 487,
+    "tools": 2
+   },
+   "word_counts": [
+    94,
+    90,
+    95
+   ],
+   "wc_spread": 5,
+   "avg_calls": 1.0,
+   "avg_prompt_tokens": 115,
+   "avg_completion_tokens": 1149,
+   "avg_latency_s": 3.54
+  },
+  "complex:crewai": {
+   "calls": [
+    4,
+    4,
+    4
+   ],
+   "prompt_tokens": [
+    2342,
+    2342,
+    2340
+   ],
+   "completion_tokens": [
+    481,
+    481,
+    603
+   ],
+   "latency_s": [
+    4.93,
+    5.95,
+    5.11
+   ],
+   "first_call_prompt_tokens": [
+    481,
+    481,
+    481
+   ],
+   "first_call_chars": {
+    "sys": 359,
+    "user": 473,
+    "tools": 470
+   },
+   "word_counts": [
+    97,
+    97,
+    94
+   ],
+   "wc_spread": 3,
+   "avg_calls": 4.0,
+   "avg_prompt_tokens": 2341,
+   "avg_completion_tokens": 522,
+   "avg_latency_s": 5.33
+  }
+ },
+ "scaling_multipliers": {
+  "strands": {
+   "calls": 1.11,
+   "prompt_tokens": 1.35,
+   "completion_tokens": 0.98,
+   "latency": 0.87
+  },
+  "langgraph": {
+   "calls": 1.0,
+   "prompt_tokens": 1.02,
+   "completion_tokens": 0.61,
+   "latency": 0.76
+  },
+  "crewai": {
+   "calls": 1.0,
+   "prompt_tokens": 1.11,
+   "completion_tokens": 1.21,
+   "latency": 1.41
+  }
+ },
+ "caveat": "strands complex run2: empty content (finish_reason=stop, digest in reasoning); wc recovered from tool arg (106)."
+}
