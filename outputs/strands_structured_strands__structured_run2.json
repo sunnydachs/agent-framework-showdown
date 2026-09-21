@@ -1,0 +1,7 @@
+{
+ "framework": "strands",
+ "task": "structured",
+ "run_label": "strands__structured_run2",
+ "elapsed_s": 11.2,
+ "result": "{\n  \"summary\": \"Today's AI agents news highlights a sector rapidly maturing into production-ready technology across the industry. Open-source agent frameworks have tripled adoption and reached significant production milestones. Meanwhile, model-driven agents are quietly replacing hand-coded orchestration in startups, fundamentally shifting the development paradigm. Tool-calling reliability has become the new benchmark for frontier models, signaling a shift toward practical capability over raw performance metrics. Multi-agent swarms are transitioning from demonstrations to regulated enterprise workflows, marking a critical adoption phase for enterprise deployment around the world.\",\n  \"word_count\": 82,\n  \"topics\": [\"AI agents\"],\n  \"publish_ready\": true\n}\n"
+}

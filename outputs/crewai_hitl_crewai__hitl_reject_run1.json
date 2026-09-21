@@ -1,0 +1,8 @@
+{
+ "framework": "crewai",
+ "task": "hitl",
+ "approval_mode": "reject",
+ "run_label": "crewai__hitl_reject_run1",
+ "elapsed_s": 10.41,
+ "result": "Open-source agent frameworks have reached production maturity, and model-driven agents are quietly replacing hand-coded orchestration. Tool-calling reliability is now the industry benchmark, pushing multi-agent swarms into regulated enterprise workflows. To support this growth, observability standards are emerging to trace agent decisions. Caution line: Autonomous deployments in regulated sectors carry inherent risks requiring rigorous human oversight."
+}

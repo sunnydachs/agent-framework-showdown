@@ -1,0 +1,14 @@
+{
+ "framework": "langgraph",
+ "task": "hitl",
+ "approval_mode": "approve",
+ "run_label": "langgraph__hitl_approve_run3",
+ "elapsed_s": 4.08,
+ "phase1_s": 4.08,
+ "phase2_resume_s": 0.0,
+ "interrupted": true,
+ "interrupt_payload": "{'request': 'Approve publishing this digest?', 'draft': 'The AI agent landscape is rapidly maturing as open source frameworks hit a major production milestone, with adoption tripling across the indust",
+ "approved": true,
+ "published": true,
+ "draft_head": "The AI agent landscape is rapidly maturing as open source frameworks hit a major production milestone, with adoption tripling across the industry. Startups are quietly replacing hand coded orchestrati"
+}

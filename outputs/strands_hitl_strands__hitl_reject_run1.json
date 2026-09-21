@@ -1,0 +1,8 @@
+{
+ "framework": "strands",
+ "task": "hitl",
+ "approval_mode": "reject",
+ "run_label": "strands__hitl_reject_run1",
+ "elapsed_s": 5.32,
+ "result": "The reviewer did not approve the draft for publishing. The digest was rejected and will not be published. If you'd like, I can revise it and resubmit for approval.\n"
+}

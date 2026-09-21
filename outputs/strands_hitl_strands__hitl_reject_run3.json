@@ -1,0 +1,8 @@
+{
+ "framework": "strands",
+ "task": "hitl",
+ "approval_mode": "reject",
+ "run_label": "strands__hitl_reject_run3",
+ "elapsed_s": 4.42,
+ "result": "The draft was **rejected** by the reviewer and was **not published**. Per our workflow, no publishing action was taken. Let me know if you'd like me to revise the digest and resubmit for approval.\n"
+}

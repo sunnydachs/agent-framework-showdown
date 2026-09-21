@@ -1,0 +1,7 @@
+{
+ "framework": "strands",
+ "task": "structured",
+ "run_label": "strands__structured_run3",
+ "elapsed_s": 7.52,
+ "result": "{\"summary\": \"Today's AI agents landscape is shifting rapidly from experimentation to full-scale production across the tech industry. Open-source agent frameworks have tripled their adoption rates, while startups are increasingly replacing hand-coded orchestration with model-driven alternatives. Tool-calling reliability has become the new benchmark for frontier models, and multi-agent swarms are transitioning from experimental demos into regulated enterprise workflows. Meanwhile, observability standards are emerging to trace agent decisions end to end, addressing growing concerns about transparency, safety, and accountability in autonomous AI systems worldwide.\", \"word_count\": 81, \"topics\": [\"AI agents\"], \"publish_ready\": true}\n"
+}

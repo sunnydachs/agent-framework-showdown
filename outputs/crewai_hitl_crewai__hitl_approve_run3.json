@@ -1,0 +1,8 @@
+{
+ "framework": "crewai",
+ "task": "hitl",
+ "approval_mode": "approve",
+ "run_label": "crewai__hitl_approve_run3",
+ "elapsed_s": 4.0,
+ "result": "The AI agent landscape is rapidly maturing as open-source frameworks finally hit production milestones, shifting the focus from experimentation to deployment. Model-driven agents are quietly replacing rigid, hand-coded orchestration, enabling more flexible and intelligent workflows. As these systems evolve, tool-calling reliability has become the critical benchmark for success. Meanwhile, multi-agent swarms are moving into regulated enterprise workflows, bringing complex collaboration to highly compliant industries. To support this enterprise adoption, observability standards are emerging to trace agent decisions, ensuring the transparency and accountability necessary for autonomous systems to thrive."
+}
