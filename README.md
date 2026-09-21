@@ -56,6 +56,25 @@ python3 runs/run_matrix.py
 python3 runs/analyze_matrix.py   # -> artifacts/matrix_report.json
 ```
 
+For the follow-up experiments (45 more runs, all through the same proxy):
+
+```bash
+# A: framework tax - what each framework ADDS to the first LLM call
+python3 runs/analyze_tax.py
+
+# B: task-shape scaling - complex task (branch + 2 fetches) vs base, 9 runs
+python3 runs/run_complex.py && python3 runs/analyze_scaling.py
+
+# D: human-in-the-loop - interrupt() vs human_input vs prompt-only, 18 runs
+python3 runs/run_hitl.py && python3 runs/analyze_hitl.py
+
+# E: audit-trail reconstruction - what an auditor can recover from the traces
+python3 runs/analyze_audit.py
+
+# F: structured-output compliance - strict JSON, 9 runs
+python3 runs/run_structured.py && python3 runs/analyze_structured.py
+```
+
 ## Measured numbers (Sep 2026, single model, 27 runs)
 
 |                       | Strands              | LangGraph            | CrewAI      |
