@@ -59,7 +59,12 @@ def parameter_hash(params: dict) -> str:
 
 
 class IdempotencyLedger:
-    """SQLite ledger: (tool_name, key) unique; PENDING -> SUCCESS/FAILED."""
+    """SQLite ledger: (tool_name, key) unique; PENDING -> SUCCESS/FAILED.
+
+    A crash mid-execution leaves the PENDING row in place: the key stays
+    locked (no re-execution - the safe default for a destructive action) and
+    later callers with that key time out; the recovery is a NEW key.
+    """
 
     def __init__(self, path: Path = LEDGER_PATH):
         self.path = Path(path)
@@ -166,6 +171,12 @@ def publish_with_key(article: str, key: str, ledger: IdempotencyLedger = None) -
                 f"key '{key}' already used with a different parameter_hash "
                 f"({existing['parameter_hash'][:12]} != {phash[:12]}) - caller bug, refusing"
             )
+        if existing["status"] == "PENDING":
+            # A concurrent caller owns the execution (it inserted the PENDING
+            # row and is mid-publish). Wait for its result instead of
+            # returning the empty PENDING row.
+            row = ledger.wait(_PUBLISH, key)
+            return {"deduped": True, "status": row["status"], "result": row["result"]}
         return {"deduped": True, "status": existing["status"], "result": existing["result"]}
 
     if ledger.claim_pending(_PUBLISH, key, phash):
