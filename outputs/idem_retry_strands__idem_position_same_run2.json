@@ -1,0 +1,44 @@
+{
+ "framework": "strands",
+ "task": "idem_retry",
+ "idem_mode": "position",
+ "retry_specs_initial": 1,
+ "run_label": "strands__idem_position_same_run2",
+ "elapsed_s": 9.21,
+ "n_publish_execs_inproc": 2,
+ "exec_log": [
+  {
+   "args": {
+    "article": "**Today's Tech News Digest — AI Agents**\n\nOpen-source agent frameworks have hit a major production milestone as adoption triples across the industry. Model-driven agents are quietly replacing hand-coded orchestration in startups, while tool-calling reliability has become the new benchmark for frontier models. Multi-agent swarms are moving from demos into regulated enterprise workflows, and observability standards are emerging to trace agent decisions end to end. The era of autonomous AI agents is rapidly becoming production reality.",
+    "note": ""
+   },
+   "result": {
+    "deduped": false,
+    "status": "SUCCESS",
+    "result": {
+     "status": "published",
+     "chars": 538
+    }
+   },
+   "error": null,
+   "exec_s": 2.04
+  },
+  {
+   "args": {
+    "article": "**Today's Tech News Digest — AI Agents**\n\nOpen-source agent frameworks have hit a major production milestone as adoption triples across the industry. Model-driven agents are quietly replacing hand-coded orchestration in startups, while tool-calling reliability has become the new benchmark for frontier models. Multi-agent swarms are moving from demos into regulated enterprise workflows, and observability standards are emerging to trace agent decisions end to end. The era of autonomous AI agents is rapidly becoming production reality.",
+    "note": ""
+   },
+   "result": {
+    "deduped": true,
+    "status": "SUCCESS",
+    "result": {
+     "status": "published",
+     "chars": 538
+    }
+   },
+   "error": null,
+   "exec_s": 2.0
+  }
+ ],
+ "result": "**Published Successfully!** 🎉\n\nToday's tech news digest on AI agents has been published (538 characters, deduplicated). The digest covered five key headlines: open-source agent frameworks hitting a production milestone, model-driven agents replacing hand-coded orchestration, tool-calling reliability as the new benchmark, multi-agent swarms entering regulated enterprise workflows, and emerging obse"
+}

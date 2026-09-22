@@ -1,0 +1,8 @@
+{
+ "framework": "langgraph",
+ "phase": "run",
+ "checkpointer": "durable",
+ "run_label": "langgraph__crash_durable_run3",
+ "phase1_s": 8.23,
+ "interrupted": true
+}

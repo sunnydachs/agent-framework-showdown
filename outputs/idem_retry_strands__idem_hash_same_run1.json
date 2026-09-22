@@ -1,0 +1,44 @@
+{
+ "framework": "strands",
+ "task": "idem_retry",
+ "idem_mode": "hash",
+ "retry_specs_initial": 1,
+ "run_label": "strands__idem_hash_same_run1",
+ "elapsed_s": 10.11,
+ "n_publish_execs_inproc": 2,
+ "exec_log": [
+  {
+   "args": {
+    "article": "**AI Agents Tech Digest — Today's Top Headlines**\n\n1. **Open-source agent frameworks hit production milestone as adoption triples** — Community-driven agent tools are rapidly maturing, with enterprise adoption surging threefold.\n2. **Model-driven agents quietly replace hand-coded orchestration in startups** — Startups are shifting away from brittle, hand-coded workflows toward flexible, LLM-driven orchestration.\n3. **Tool-calling reliability becomes the new benchmark for frontier models** — The ability to accurately invoke external tools is emerging as a key metric for evaluating frontier AI models.\n4. **Multi-agent swarms move from demos to regulated enterprise workflows** — Collaborative agent systems are graduating from proof-of-concept to production in heavily regulated industries.\n5. **Observability standards emerge for tracing agent decisions end to end** — New frameworks are being developed to provide full traceability and accountability for autonomous agent decisions.\n\n*From open-source breakthroughs to enterprise-grade observability, the AI agent landscape is rapidly evolving from experimentation to production reality.*",
+    "note": ""
+   },
+   "result": {
+    "deduped": false,
+    "status": "SUCCESS",
+    "result": {
+     "status": "published",
+     "chars": 1146
+    }
+   },
+   "error": null,
+   "exec_s": 2.04
+  },
+  {
+   "args": {
+    "article": "**AI Agents Tech Digest — Today's Top Headlines**\n\n1. **Open-source agent frameworks hit production milestone as adoption triples** — Community-driven agent tools are rapidly maturing, with enterprise adoption surging threefold.\n2. **Model-driven agents quietly replace hand-coded orchestration in startups** — Startups are shifting away from brittle, hand-coded workflows toward flexible, LLM-driven orchestration.\n3. **Tool-calling reliability becomes the new benchmark for frontier models** — The ability to accurately invoke external tools is emerging as a key metric for evaluating frontier AI models.\n4. **Multi-agent swarms move from demos to regulated enterprise workflows** — Collaborative agent systems are graduating from proof-of-concept to production in heavily regulated industries.\n5. **Observability standards emerge for tracing agent decisions end to end** — New frameworks are being developed to provide full traceability and accountability for autonomous agent decisions.\n\n*From open-source breakthroughs to enterprise-grade observability, the AI agent landscape is rapidly evolving from experimentation to production reality.*",
+    "note": ""
+   },
+   "result": {
+    "deduped": true,
+    "status": "SUCCESS",
+    "result": {
+     "status": "published",
+     "chars": 1146
+    }
+   },
+   "error": null,
+   "exec_s": 2.0
+  }
+ ],
+ "result": "The tech news digest has been successfully published! Here's a summary of what happened:\n\n- **Headlines fetched**: 5 AI agent stories covering open-source frameworks, model-driven orchestration, tool-calling benchmarks, multi-agent swarms, and observability standards.\n- **Publish result**: The first attempt hit a transient 504 backend error, so the article was re-published and confirmed **successf"
+}

@@ -1,0 +1,23 @@
+{
+ "framework": "langgraph",
+ "phase": "resume8764",
+ "shape": "empty thread (crash before any durable checkpoint)",
+ "get_state_next": [],
+ "get_state_values": {
+  "headlines": [
+   "Open-source agent frameworks hit production milestone as adoption triples",
+   "Model-driven agents quietly replace hand-coded orchestration in startups",
+   "Tool-calling reliability becomes the new benchmark for frontier models",
+   "Multi-agent swarms move from demos to regulated enterprise workflows",
+   "Observability standards emerge for tracing agent decisions end to end"
+  ],
+  "draft": "Open-source agent frameworks are hitting major production milestones as adoption triples, while model-driven agents quietly replace hand-coded orchestration in startups. Tool-calling reliability has become the critical new benchmark for frontier models. Meanwhile, multi-agent swarms are moving from early demos to regulated enterprise workflows, and new observability standards are emerging to trace agent decisions end to end across industries.",
+  "approved": true,
+  "published": true
+ },
+ "command_resume": "SUCCEEDED (unexpected)",
+ "invoke_none": "SUCCEEDED (unexpected)",
+ "mem_command_resume": "SUCCEEDED (unexpected)",
+ "llm_calls_incurred_by_empty_resume": 1,
+ "failure_record_gap": "crash before first durable checkpoint leaves NO failure record; subsequent Command(resume=...) silently re-executed 1 LLM calls instead of failing fast"
+}

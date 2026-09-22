@@ -1,0 +1,10 @@
+{
+ "framework": "crewai",
+ "phase": "resume",
+ "run_label": "crewai__crash_noresume_run2",
+ "state_survived": false,
+ "resume_s": 4.01,
+ "rerun": true,
+ "crew_error": null,
+ "result_tail": "Open-source agent frameworks have officially hit a major production milestone, marking a significant shift as model-driven agents quietly replace hand-coded orchestration. With tool-calling reliabilit"
+}

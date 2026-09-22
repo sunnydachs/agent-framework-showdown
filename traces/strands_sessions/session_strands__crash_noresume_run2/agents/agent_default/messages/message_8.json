@@ -1,0 +1,43 @@
+{
+  "message": {
+    "role": "assistant",
+    "content": [
+      {
+        "reasoningContent": {
+          "reasoningText": {
+            "text": "Here's my draft digest based on the headlines:\n\n---\n\n**AI Agents Daily Digest**\n\nOpen-source agent frameworks have reached a production milestone with adoption tripling, while model-driven agents are increasingly replacing hand-coded orchestration in startups. Tool-calling reliability has emerged as the new benchmark for frontier models. Meanwhile, multi-agent swarms are transitioning from demos to regulated enterprise workflows, and the industry is finally establishing observability standards for tracing agent decisions end to end.\n\n---\n\nLet me submit this for review."
+          }
+        }
+      },
+      {
+        "text": "Here's my draft digest:\n\n**AI Agents Daily Digest**\n\nOpen-source agent frameworks have reached a production milestone with adoption tripling, while model-driven agents are increasingly replacing hand-coded orchestration in startups. Tool-calling reliability has emerged as the new benchmark for frontier models. Meanwhile, multi-agent swarms are transitioning from demos to regulated enterprise workflows, and the industry is finally establishing observability standards for tracing agent decisions end to end.\n\nLet me submit this for review."
+      },
+      {
+        "toolUse": {
+          "toolUseId": "call_c652ff1502e74be18ffbed62",
+          "name": "ask_to_publish",
+          "input": {
+            "article": "AI Agents Daily Digest\n\nOpen-source agent frameworks have reached a production milestone with adoption tripling, while model-driven agents are increasingly replacing hand-coded orchestration in startups. Tool-calling reliability has emerged as the new benchmark for frontier models. Meanwhile, multi-agent swarms are transitioning from demos to regulated enterprise workflows, and the industry is finally establishing observability standards for tracing agent decisions end to end.",
+            "summary": "Summary of the top 5 AI agents headlines: open-source adoption tripling, model-driven orchestration replacing hand-coded systems, tool-calling as a new benchmark, multi-agent swarms entering regulated enterprise workflows, and observability standards emerging for agent decision tracing."
+          }
+        }
+      }
+    ],
+    "metadata": {
+      "usage": {
+        "inputTokens": 674,
+        "outputTokens": 269,
+        "totalTokens": 943
+      },
+      "metrics": {
+        "latencyMs": 0,
+        "timeToFirstByteMs": 1495
+      }
+    },
+    "tracking_id": "e54e6551-8afa-4ca3-9a42-edc14c462ac7"
+  },
+  "message_id": 8,
+  "redact_message": null,
+  "created_at": "2026-09-22T11:06:23.524083+00:00",
+  "updated_at": "2026-09-22T11:06:23.524092+00:00"
+}

@@ -1,0 +1,44 @@
+{
+ "framework": "strands",
+ "task": "idem_retry",
+ "idem_mode": "position",
+ "retry_specs_initial": 1,
+ "run_label": "strands__idem_position_same_run3",
+ "elapsed_s": 9.02,
+ "n_publish_execs_inproc": 2,
+ "exec_log": [
+  {
+   "args": {
+    "article": "Today's AI agents landscape is evolving rapidly. Open-source agent frameworks have hit a production milestone with adoption tripling, while model-driven agents are quietly replacing hand-coded orchestration in startups. Tool-calling reliability has become the new benchmark for frontier models, and multi-agent swarms are transitioning from demos to regulated enterprise workflows. Meanwhile, observability standards are emerging to trace agent decisions end to end, marking a maturing ecosystem.",
+    "note": ""
+   },
+   "result": {
+    "deduped": false,
+    "status": "SUCCESS",
+    "result": {
+     "status": "published",
+     "chars": 496
+    }
+   },
+   "error": null,
+   "exec_s": 2.04
+  },
+  {
+   "args": {
+    "article": "Today's AI agents landscape is evolving rapidly. Open-source agent frameworks have hit a production milestone with adoption tripling, while model-driven agents are quietly replacing hand-coded orchestration in startups. Tool-calling reliability has become the new benchmark for frontier models, and multi-agent swarms are transitioning from demos to regulated enterprise workflows. Meanwhile, observability standards are emerging to trace agent decisions end to end, marking a maturing ecosystem.",
+    "note": ""
+   },
+   "result": {
+    "deduped": true,
+    "status": "SUCCESS",
+    "result": {
+     "status": "published",
+     "chars": 496
+    }
+   },
+   "error": null,
+   "exec_s": 2.0
+  }
+ ],
+ "result": "The digest has been successfully published! Today's AI agents tech news digest covered five key headlines: open-source agent frameworks hitting a production milestone, model-driven agents replacing hand-coded orchestration, tool-calling reliability becoming the new benchmark, multi-agent swarms moving into regulated enterprise workflows, and observability standards emerging for agent decision trac"
+}

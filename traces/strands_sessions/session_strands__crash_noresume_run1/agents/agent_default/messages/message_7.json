@@ -1,0 +1,33 @@
+{
+  "message": {
+    "role": "assistant",
+    "content": [
+      {
+        "reasoningContent": {
+          "reasoningText": {
+            "text": "The article has been successfully published. The final status confirms it's live."
+          }
+        }
+      },
+      {
+        "text": "The article has been published successfully! 🎉\n\n**Status:** Published — The AI agents tech news digest is now live. It covered five key headlines: open-source agent frameworks hitting a production milestone, model-driven orchestration in startups, tool-calling reliability benchmarks, multi-agent swarms in regulated enterprises, and emerging observability standards."
+      }
+    ],
+    "metadata": {
+      "usage": {
+        "inputTokens": 618,
+        "outputTokens": 68,
+        "totalTokens": 686
+      },
+      "metrics": {
+        "latencyMs": 0,
+        "timeToFirstByteMs": 890
+      }
+    },
+    "tracking_id": "d518f9cd-f261-426b-82d2-88b9363e9190"
+  },
+  "message_id": 7,
+  "redact_message": null,
+  "created_at": "2026-09-22T10:33:33.225523+00:00",
+  "updated_at": "2026-09-22T10:33:33.225530+00:00"
+}

@@ -1,0 +1,10 @@
+{
+ "framework": "strands",
+ "phase": "resume",
+ "run_label": "strands__crash_noresume_run1",
+ "state_survived": false,
+ "rerun": true,
+ "resume_s": 4.31,
+ "resume_error": null,
+ "resume_tail": "The article has been published successfully! ✅\n\n**Status:** Published — The AI agents tech news digest is now live, covering all five key headlines on open-source adoption, model-driven orchestration, tool-calling benchmarks, multi-agent swarms, and observability standards.\n"
+}

@@ -1,0 +1,44 @@
+{
+ "framework": "strands",
+ "task": "idem_retry",
+ "idem_mode": "position",
+ "retry_specs_initial": 1,
+ "run_label": "strands__idem_position_same_run1",
+ "elapsed_s": 9.0,
+ "n_publish_execs_inproc": 2,
+ "exec_log": [
+  {
+   "args": {
+    "article": "Today's Tech News Digest — AI Agents\n\nThe AI agent landscape is shifting rapidly from experimentation to production. Open-source agent frameworks have hit a production milestone, with adoption tripling as enterprises embrace decentralized AI workflows. Model-driven agents are quietly replacing hand-coded orchestration in startups, prioritizing flexibility over rigid pipelines.\n\nReliability is the new frontier: tool-calling accuracy has become the key benchmark for frontier models, while multi-agent swarms are graduating from demos to regulated enterprise environments. Meanwhile, the industry is converging on observability standards to trace agent decisions end to end — a crucial step toward accountability at scale.\n\nThe message is clear: agents are moving from labs to live systems, and the focus has shifted from capability to dependability.",
+    "note": "Daily AI agents tech news digest"
+   },
+   "result": {
+    "deduped": false,
+    "status": "SUCCESS",
+    "result": {
+     "status": "published",
+     "chars": 852
+    }
+   },
+   "error": null,
+   "exec_s": 2.04
+  },
+  {
+   "args": {
+    "article": "Today's Tech News Digest — AI Agents\n\nThe AI agent landscape is shifting rapidly from experimentation to production. Open-source agent frameworks have hit a production milestone, with adoption tripling as enterprises embrace decentralized AI workflows. Model-driven agents are quietly replacing hand-coded orchestration in startups, prioritizing flexibility over rigid pipelines.\n\nReliability is the new frontier: tool-calling accuracy has become the key benchmark for frontier models, while multi-agent swarms are graduating from demos to regulated enterprise environments. Meanwhile, the industry is converging on observability standards to trace agent decisions end to end — a crucial step toward accountability at scale.\n\nThe message is clear: agents are moving from labs to live systems, and the focus has shifted from capability to dependability.",
+    "note": "Daily AI agents tech news digest"
+   },
+   "result": {
+    "deduped": true,
+    "status": "SUCCESS",
+    "result": {
+     "status": "published",
+     "chars": 852
+    }
+   },
+   "error": null,
+   "exec_s": 2.0
+  }
+ ],
+ "result": "✅ **Tech news digest published successfully!**\n\nYour daily digest on AI agents is now live. It covered:\n\n- Open-source agent frameworks hitting a production milestone with tripled adoption\n- Model-driven agents replacing hand-coded orchestration in startups\n- Tool-calling reliability becoming the key frontier benchmark\n- Multi-agent swarms entering regulated enterprise workflows\n- Emerging observa"
+}

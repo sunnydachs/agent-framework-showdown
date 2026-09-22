@@ -1,0 +1,43 @@
+{
+  "message": {
+    "role": "assistant",
+    "content": [
+      {
+        "reasoningContent": {
+          "reasoningText": {
+            "text": "The ask_to_publish call was interrupted. Let me try again with the same draft."
+          }
+        }
+      },
+      {
+        "text": "Let me resubmit the digest for review."
+      },
+      {
+        "toolUse": {
+          "toolUseId": "call_d5988153e17348abb0730dde",
+          "name": "ask_to_publish",
+          "input": {
+            "article": "**Today's Tech News Digest: AI Agents**\n\nOpen-source agent frameworks have reached a production milestone with adoption tripling across the industry. Meanwhile, model-driven agents are quietly replacing hand-coded orchestration in startups, and tool-calling reliability is emerging as the key benchmark for frontier models. Multi-agent swarms are transitioning from demos to regulated enterprise workflows, while new observability standards are being developed to trace agent decisions end to end. The AI agent ecosystem is rapidly maturing from experimental to production-grade infrastructure.",
+            "summary": "AI agent news digest covering open-source adoption, model-driven orchestration, tool-calling benchmarks, multi-agent enterprise deployment, and observability standards."
+          }
+        }
+      }
+    ],
+    "metadata": {
+      "usage": {
+        "inputTokens": 492,
+        "outputTokens": 185,
+        "totalTokens": 677
+      },
+      "metrics": {
+        "latencyMs": 0,
+        "timeToFirstByteMs": 1492
+      }
+    },
+    "tracking_id": "e6cc86ce-4289-421e-a66d-b2697a79a8df"
+  },
+  "message_id": 6,
+  "redact_message": null,
+  "created_at": "2026-09-22T11:06:42.310543+00:00",
+  "updated_at": "2026-09-22T11:06:42.310551+00:00"
+}

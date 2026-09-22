@@ -1,0 +1,44 @@
+{
+ "framework": "strands",
+ "task": "idem_retry",
+ "idem_mode": "none",
+ "retry_specs_initial": 1,
+ "run_label": "strands__idem_none_same_run2",
+ "elapsed_s": 9.07,
+ "n_publish_execs_inproc": 2,
+ "exec_log": [
+  {
+   "args": {
+    "article": "Today's AI agent landscape is shifting from experimentation to production. Open-source frameworks are seeing triple adoption, while model-driven agents are replacing hand-coded orchestration in startups. Tool-calling reliability has become the key benchmark for frontier models, and multi-agent swarms are entering regulated enterprise workflows. New observability standards are also emerging to trace agent decisions end to end.",
+    "note": ""
+   },
+   "result": {
+    "deduped": false,
+    "status": "published",
+    "result": {
+     "status": "published",
+     "chars": 429
+    }
+   },
+   "error": null,
+   "exec_s": 2.0
+  },
+  {
+   "args": {
+    "article": "Today's AI agent landscape is shifting from experimentation to production. Open-source frameworks are seeing triple adoption, while model-driven agents are replacing hand-coded orchestration in startups. Tool-calling reliability has become the key benchmark for frontier models, and multi-agent swarms are entering regulated enterprise workflows. New observability standards are also emerging to trace agent decisions end to end.",
+    "note": ""
+   },
+   "result": {
+    "deduped": false,
+    "status": "published",
+    "result": {
+     "status": "published",
+     "chars": 429
+    }
+   },
+   "error": null,
+   "exec_s": 2.0
+  }
+ ],
+ "result": "The tech news digest has been successfully published! The article covered today's key AI agent headlines: open-source frameworks tripling in adoption, model-driven agents replacing hand-coded orchestration in startups, tool-calling reliability becoming a frontier benchmark, multi-agent swarms entering regulated enterprise workflows, and new observability standards for tracing agent decisions end t"
+}

@@ -1,0 +1,44 @@
+{
+ "framework": "strands",
+ "task": "idem_retry",
+ "idem_mode": "none",
+ "retry_specs_initial": 1,
+ "run_label": "strands__idem_none_same_run1",
+ "elapsed_s": 9.1,
+ "n_publish_execs_inproc": 2,
+ "exec_log": [
+  {
+   "args": {
+    "article": "**Today's Tech News Digest — AI Agents**\n\nOpen-source agent frameworks are reaching production maturity with a tripling of adoption. Model-driven agents are replacing hand-coded orchestration in startups, while tool-calling reliability emerges as the key benchmark for frontier models. Multi-agent swarms are transitioning from demos to regulated enterprise workflows, and new observability standards are being developed to trace agent decisions end to end. The AI agent ecosystem is maturing rapidly across open-source, enterprise, and tooling layers.",
+    "note": ""
+   },
+   "result": {
+    "deduped": false,
+    "status": "published",
+    "result": {
+     "status": "published",
+     "chars": 552
+    }
+   },
+   "error": null,
+   "exec_s": 2.0
+  },
+  {
+   "args": {
+    "article": "**Today's Tech News Digest — AI Agents**\n\nOpen-source agent frameworks are reaching production maturity with a tripling of adoption. Model-driven agents are replacing hand-coded orchestration in startups, while tool-calling reliability emerges as the key benchmark for frontier models. Multi-agent swarms are transitioning from demos to regulated enterprise workflows, and new observability standards are being developed to trace agent decisions end to end. The AI agent ecosystem is maturing rapidly across open-source, enterprise, and tooling layers.",
+    "note": ""
+   },
+   "result": {
+    "deduped": false,
+    "status": "published",
+    "result": {
+     "status": "published",
+     "chars": 552
+    }
+   },
+   "error": null,
+   "exec_s": 2.0
+  }
+ ],
+ "result": "Today's tech news digest has been successfully published! The article covering AI agent headlines — from open-source framework adoption tripling to multi-agent swarms entering regulated enterprise workflows — is now live.\n"
+}

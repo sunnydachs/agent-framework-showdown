@@ -1,0 +1,10 @@
+{
+ "framework": "crewai",
+ "phase": "persist_probe",
+ "db_storage_path": "/home/arari/projects/agent-framework-showdown/.local/share/agent-framework-showdown",
+ "db_exists": true,
+ "db_files": [
+  "latest_kickoff_task_outputs.db"
+ ],
+ "persist_flow_error": "TypeError: persist.<locals>.decorator() missing 1 required positional argument: 'target'"
+}

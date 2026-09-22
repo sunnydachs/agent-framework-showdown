@@ -1,0 +1,23 @@
+{
+  "message": {
+    "role": "user",
+    "content": [
+      {
+        "toolResult": {
+          "toolUseId": "call_c86d4fcc928e43229a0eb7a4",
+          "status": "success",
+          "content": [
+            {
+              "text": "{\"status\": \"published\", \"chars\": 575, \"log\": \"strands-crash-publish\"}"
+            }
+          ]
+        }
+      }
+    ],
+    "tracking_id": "1f18a2f1-7212-477b-95c0-a095262f969f"
+  },
+  "message_id": 25,
+  "redact_message": null,
+  "created_at": "2026-09-22T10:55:40.131629+00:00",
+  "updated_at": "2026-09-22T10:55:40.131634+00:00"
+}

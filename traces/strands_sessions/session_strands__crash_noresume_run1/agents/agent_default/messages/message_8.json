@@ -1,0 +1,15 @@
+{
+  "message": {
+    "role": "user",
+    "content": [
+      {
+        "text": "Write today's tech news digest and publish it if approved."
+      }
+    ],
+    "tracking_id": "6952587e-348f-4d70-8e6f-44df82076a23"
+  },
+  "message_id": 8,
+  "redact_message": null,
+  "created_at": "2026-09-22T10:35:41.489481+00:00",
+  "updated_at": "2026-09-22T10:35:41.489487+00:00"
+}

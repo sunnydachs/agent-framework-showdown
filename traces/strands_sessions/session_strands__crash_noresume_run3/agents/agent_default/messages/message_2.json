@@ -1,0 +1,23 @@
+{
+  "message": {
+    "role": "user",
+    "content": [
+      {
+        "toolResult": {
+          "toolUseId": "call_4afa8dc733784e28867522e8",
+          "status": "success",
+          "content": [
+            {
+              "text": "{\"topic\": \"AI agents\", \"headlines\": [\"Open-source agent frameworks hit production milestone as adoption triples\", \"Model-driven agents quietly replace hand-coded orchestration in startups\", \"Tool-calling reliability becomes the new benchmark for frontier models\", \"Multi-agent swarms move from demos to regulated enterprise workflows\", \"Observability standards emerge for tracing agent decisions end to end\"]}"
+            }
+          ]
+        }
+      }
+    ],
+    "tracking_id": "8dc4570a-20d6-4750-ba4a-dac6d9e147e6"
+  },
+  "message_id": 2,
+  "redact_message": null,
+  "created_at": "2026-09-22T11:06:32.164479+00:00",
+  "updated_at": "2026-09-22T11:06:32.164483+00:00"
+}

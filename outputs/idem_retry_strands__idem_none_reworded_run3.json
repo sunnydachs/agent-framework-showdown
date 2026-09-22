@@ -1,0 +1,44 @@
+{
+ "framework": "strands",
+ "task": "idem_retry",
+ "idem_mode": "none",
+ "retry_specs_initial": 1,
+ "run_label": "strands__idem_none_reworded_run3",
+ "elapsed_s": 8.82,
+ "n_publish_execs_inproc": 2,
+ "exec_log": [
+  {
+   "args": {
+    "article": "**Today's Tech News Digest: AI Agents**\n\nOpen-source agent frameworks have reached a production milestone with adoption tripling across the industry. Model-driven agents are quietly replacing hand-coded orchestration in startups, while tool-calling reliability has become the new benchmark for frontier models. Multi-agent swarms are transitioning from demos to regulated enterprise workflows, and observability standards are emerging to trace agent decisions end to end.",
+    "note": ""
+   },
+   "result": {
+    "deduped": false,
+    "status": "published",
+    "result": {
+     "status": "published",
+     "chars": 471
+    }
+   },
+   "error": null,
+   "exec_s": 2.0
+  },
+  {
+   "args": {
+    "article": "**Today's Tech News Digest: AI Agents**\n\nOpen-source agent frameworks have reached a production milestone with adoption tripling across the industry. Model-driven agents are quietly replacing hand-coded orchestration in startups, while tool-calling reliability has become the new benchmark for frontier models. Multi-agent swarms are transitioning from demos to regulated enterprise workflows, and observability standards are emerging to trace agent decisions end to end. [revised: source attribution added]",
+    "note": ""
+   },
+   "result": {
+    "deduped": false,
+    "status": "published",
+    "result": {
+     "status": "published",
+     "chars": 507
+    }
+   },
+   "error": null,
+   "exec_s": 2.0
+  }
+ ],
+ "result": ""
+}

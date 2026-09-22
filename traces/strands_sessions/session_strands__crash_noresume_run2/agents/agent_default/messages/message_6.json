@@ -1,0 +1,43 @@
+{
+  "message": {
+    "role": "assistant",
+    "content": [
+      {
+        "reasoningContent": {
+          "reasoningText": {
+            "text": "The previous call was interrupted, so the review process wasn't completed. Let me try again by first fetching fresh headlines, then writing the digest, asking to publish, and following the workflow from there.\n\nActually, let me re-read the situation. The previous ask_to_publish was interrupted (tool was interrupted). So we didn't get a review decision. I should redo the whole process: fetch headlines, write a digest, and ask to publish again.\n\nLet me start fresh by fetching headlines again."
+          }
+        }
+      },
+      {
+        "text": "It seems the previous request was interrupted. Let me restart the process by fetching fresh headlines"
+      },
+      {
+        "toolUse": {
+          "toolUseId": "call_04a41b86f9af4d848beec054",
+          "name": "get_headlines",
+          "input": {
+            "topic": "AI agents",
+            "count": 5
+          }
+        }
+      }
+    ],
+    "metadata": {
+      "usage": {
+        "inputTokens": 545,
+        "outputTokens": 65,
+        "totalTokens": 610
+      },
+      "metrics": {
+        "latencyMs": 0,
+        "timeToFirstByteMs": 1527
+      }
+    },
+    "tracking_id": "3cc00b48-5939-4b5c-bd48-e39395fd4e88"
+  },
+  "message_id": 6,
+  "redact_message": null,
+  "created_at": "2026-09-22T11:06:21.980042+00:00",
+  "updated_at": "2026-09-22T11:06:21.980050+00:00"
+}

@@ -1,0 +1,23 @@
+{
+  "message": {
+    "role": "user",
+    "content": [
+      {
+        "toolResult": {
+          "toolUseId": "call_94f46344b82e4b148ededfdd",
+          "status": "error",
+          "content": [
+            {
+              "text": "Tool was interrupted."
+            }
+          ]
+        }
+      }
+    ],
+    "tracking_id": "a8decd06-3b0f-410f-af2b-f7feb6941829"
+  },
+  "message_id": 4,
+  "redact_message": null,
+  "created_at": "2026-09-22T11:06:40.787678+00:00",
+  "updated_at": "2026-09-22T11:06:40.787686+00:00"
+}

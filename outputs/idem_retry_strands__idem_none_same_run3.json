@@ -1,0 +1,60 @@
+{
+ "framework": "strands",
+ "task": "idem_retry",
+ "idem_mode": "none",
+ "retry_specs_initial": 1,
+ "run_label": "strands__idem_none_same_run3",
+ "elapsed_s": 12.47,
+ "n_publish_execs_inproc": 3,
+ "exec_log": [
+  {
+   "args": {
+    "article": "Today's AI agents roundup: Open-source agent frameworks have hit a production milestone with adoption tripling, while model-driven agents are quietly replacing hand-coded orchestration in startups. Tool-calling reliability is emerging as the new benchmark for frontier models. Meanwhile, multi-agent swarms are transitioning from demos to regulated enterprise workflows, and the industry is finally establishing observability standards for tracing agent decisions end to end.",
+    "note": ""
+   },
+   "result": {
+    "deduped": false,
+    "status": "published",
+    "result": {
+     "status": "published",
+     "chars": 475
+    }
+   },
+   "error": null,
+   "exec_s": 2.0
+  },
+  {
+   "args": {
+    "article": "Today's AI agents roundup: Open-source agent frameworks have hit a production milestone with adoption tripling, while model-driven agents are quietly replacing hand-coded orchestration in startups. Tool-calling reliability is emerging as the new benchmark for frontier models. Meanwhile, multi-agent swarms are transitioning from demos to regulated enterprise workflows, and the industry is finally establishing observability standards for tracing agent decisions end to end.",
+    "note": ""
+   },
+   "result": {
+    "deduped": false,
+    "status": "published",
+    "result": {
+     "status": "published",
+     "chars": 475
+    }
+   },
+   "error": null,
+   "exec_s": 2.0
+  },
+  {
+   "args": {
+    "article": "Today's AI agents roundup: Open-source agent frameworks have hit a production milestone with adoption tripling, while model-driven agents are quietly replacing hand-coded orchestration in startups. Tool-calling reliability is emerging as the new benchmark for frontier models. Meanwhile, multi-agent swarms are transitioning from demos to regulated enterprise workflows, and the industry is finally establishing observability standards for tracing agent decisions end to end.",
+    "note": "Published successfully after retry"
+   },
+   "result": {
+    "deduped": false,
+    "status": "published",
+    "result": {
+     "status": "published",
+     "chars": 475
+    }
+   },
+   "error": null,
+   "exec_s": 2.0
+  }
+ ],
+ "result": "✅ Tech news digest published successfully! The article covering today's top AI agents stories — from open-source framework adoption tripling to new observability standards — is now live. No further action needed.\n"
+}
