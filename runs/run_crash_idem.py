@@ -23,6 +23,11 @@ Cells (ALL LLM calls through the recorder proxy on :8118):
   C (audit-under-retry): runs/analyze_crash_idem.py (separate step).
 
 Run labels: strands__idem_<mode>_<shape>_run<N>, <fw>__crash_<shape>_run<N>.
+
+Proxy lifecycle: the recorder proxy on :8118 is auto-started when no listener
+answers (proxy/rec_proxy.py, stdlib only) and shut down at exit; an
+already-running external proxy is left alone (its lifecycle is not ours).
+Fully-recorded runs skip without any LLM call (traces + outputs append-only).
 Run: python runs/run_crash_idem.py [--cell A|B|all] [--runs 3]
 """
 import argparse
@@ -59,6 +64,59 @@ IDEM_ENV_BASE = {
 CRASH_ENV_BASE = {
     "CKPT_DIR": "",  # filled per-run (traces/ckpt/<label>)
 }
+PROXY_PORT = 8118
+
+
+def proxy_alive(port=PROXY_PORT):
+    """True when something already listens on the proxy port."""
+    import socket
+
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.settimeout(1.0)
+        return s.connect_ex(("127.0.0.1", port)) == 0
+
+
+def ensure_proxy(port=PROXY_PORT):
+    """Start proxy/rec_proxy.py when no listener is up; None when already running.
+
+    Returns the Popen handle (or None). The caller owns shutdown ONLY for the
+    proxy IT started: an external proxy is left alone.
+    """
+    if proxy_alive(port):
+        print(f"[proxy] already listening on :{port} (external - left alone)", flush=True)
+        return None
+    env = dict(os.environ)
+    proc = subprocess.Popen(
+        [sys.executable, str(ROOT / "proxy" / "rec_proxy.py"), "--port", str(port)],
+        cwd=str(ROOT), env=env,
+        stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+    )
+    deadline = time.time() + 20
+    while time.time() < deadline:
+        if proxy_alive(port):
+            print(f"[proxy] started rec_proxy.py on :{port} (pid {proc.pid})", flush=True)
+            return proc
+        if proc.poll() is not None:
+            raise RuntimeError(f"rec_proxy.py exited rc={proc.returncode} (LLM_API_KEY missing in .env?)")
+        time.sleep(0.2)
+    proc.kill()
+    raise RuntimeError(f"rec_proxy.py never listened on :{port} within 20s")
+
+
+def shutdown_proxy(proc):
+    """Stop only the proxy this driver started (None = external, leave it)."""
+    if proc is None:
+        return
+    if proc.poll() is None:
+        proc.terminate()
+        try:
+            proc.wait(timeout=5)
+        except subprocess.TimeoutExpired:
+            proc.kill()
+            proc.wait(timeout=2)
+    print(f"[proxy] stopped rec_proxy.py (pid {proc.pid})", flush=True)
+
+
 FW_ENV = {
     "strands": {},
     "langgraph": {"OPENAI_API_KEY": "dummy-key"},
@@ -310,38 +368,42 @@ def main():
     args = ap.parse_args()
     t0 = time.time()
     n_ok = n_total = 0
+    proxy_proc = ensure_proxy()
 
-    if args.cell in ("A", "all"):
-        print("=== CELL A: crash-resume (12 runs + 4 no-LLM probes) ===", flush=True)
-        for shape in ["durable", "mem"]:
-            for run_idx in range(1, args.runs + 1):
-                rec = run_crash_fw("langgraph", shape, run_idx)
-                n_ok += 1 if rec["ok"] else 0
-                n_total += 1
-                time.sleep(1)
-        for fw in ["strands", "crewai"]:
-            for run_idx in range(1, args.runs + 1):
-                rec = run_crash_fw(fw, "noresume", run_idx)
-                n_ok += 1 if rec["ok"] else 0
-                n_total += 1
-                time.sleep(1)
-        for run_idx in range(1, args.runs + 1):
-            rec = run_8764(run_idx)
-            n_ok += 1 if rec["ok"] else 0
-            n_total += 1
-        rec = run_persist_probe()
-        n_ok += 1 if rec["ok"] else 0
-        n_total += 1
-
-    if args.cell in ("B", "all"):
-        print("=== CELL B: idempotency (18 LLM runs) ===", flush=True)
-        for mode in ["position", "hash", "none"]:
-            for shape in ["same", "reworded"]:
+    try:
+        if args.cell in ("A", "all"):
+            print("=== CELL A: crash-resume (12 runs + 4 no-LLM probes) ===", flush=True)
+            for shape in ["durable", "mem"]:
                 for run_idx in range(1, args.runs + 1):
-                    rec = run_idem_fw(mode, shape, run_idx)
+                    rec = run_crash_fw("langgraph", shape, run_idx)
                     n_ok += 1 if rec["ok"] else 0
                     n_total += 1
                     time.sleep(1)
+            for fw in ["strands", "crewai"]:
+                for run_idx in range(1, args.runs + 1):
+                    rec = run_crash_fw(fw, "noresume", run_idx)
+                    n_ok += 1 if rec["ok"] else 0
+                    n_total += 1
+                    time.sleep(1)
+            for run_idx in range(1, args.runs + 1):
+                rec = run_8764(run_idx)
+                n_ok += 1 if rec["ok"] else 0
+                n_total += 1
+            rec = run_persist_probe()
+            n_ok += 1 if rec["ok"] else 0
+            n_total += 1
+
+        if args.cell in ("B", "all"):
+            print("=== CELL B: idempotency (18 LLM runs) ===", flush=True)
+            for mode in ["position", "hash", "none"]:
+                for shape in ["same", "reworded"]:
+                    for run_idx in range(1, args.runs + 1):
+                        rec = run_idem_fw(mode, shape, run_idx)
+                        n_ok += 1 if rec["ok"] else 0
+                        n_total += 1
+                        time.sleep(1)
+    finally:
+        shutdown_proxy(proxy_proc)
 
     print(f"\nDONE: {n_ok}/{n_total} ok in {time.time()-t0:.0f}s")
     return 0 if n_ok == n_total else 1
