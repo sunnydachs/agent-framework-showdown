@@ -1,0 +1,10 @@
+{
+ "framework": "langgraph",
+ "phase": "resume8764",
+ "shape": "empty thread (crash before any durable checkpoint)",
+ "get_state_next": [],
+ "get_state_values": {},
+ "command_resume": "SUCCEEDED (unexpected)",
+ "invoke_none": "SUCCEEDED (unexpected)",
+ "mem_command_resume": "SUCCEEDED (unexpected)"
+}

@@ -73,6 +73,11 @@ python3 runs/analyze_audit.py
 
 # F: structured-output compliance - strict JSON, 9 runs
 python3 runs/run_structured.py && python3 runs/analyze_structured.py
+
+# G: crash recovery + idempotency + audit-under-retry (34 runs)
+#    SIGKILL mid-interrupt vs no checkpointer; position-key vs content-hash
+#    idempotency vs none; whether an auditor can detect duplicate effects
+python3 runs/run_crash_idem.py && python3 runs/analyze_crash_idem.py
 ```
 
 ## Measured numbers (Sep 2026, single model, 27 runs)
@@ -102,6 +107,37 @@ python3 runs/run_structured.py && python3 runs/analyze_structured.py
 ### Schema-drift resilience
 
 The `word_count` tool's argument was renamed (`text` -> `content`). All three frameworks' models followed the **new** schema with zero wrong-arg calls; no error recovery was triggered. (LangGraph would have been immune anyway — its tool calls live in code, not in a prompt.)
+
+## Experiment 4 (G): crash recovery, idempotency, and audit-under-retry
+
+34 more runs, same proxy, same model. Three questions: does state survive process death, do idempotency keys prevent duplicate side effects when an LLM retries, and can an auditor prove what happened from the traces alone. Full data: `artifacts/crash_idem_report.json` (rebuild with `runs/run_crash_idem.py && runs/analyze_crash_idem.py`).
+
+### Crash-resume (SIGKILL mid-approval-wait, new process resumes)
+
+| Framework | persistence | resume | state survived | LLM calls to resume |
+| --- | --- | --- | --- | --- |
+| LangGraph | durable checkpointer | **0.01-0.02s** | 3/3 | **0** (state restored, no re-inference) |
+| LangGraph | no checkpointer | 0.0s | 0/3 | - (state died with the process) |
+| Strands | none built-in | 4.9s avg | re-run from scratch | 5.3 avg |
+| CrewAI | none for agents | 4.2s avg | re-run from scratch | 2.0 avg |
+
+A durable checkpointer is the difference between *resume* and *redo*. LangGraph's 0.01s resume is the checkpointer restoring the graph — no LLM call at all. Without it, an identical-looking "resume" is a full re-run paying full token cost again.
+
+The issue-8764 shape (crash before the first durable checkpoint): on the tested LangGraph version the empty-thread resume **succeeded without raising** instead of raising `EmptyInputError` — the failure-record gap behavior is version-dependent, so don't rely on the error either way; keep an external acceptance ledger.
+
+### Idempotency (retry re-executes: average duplicate executions per retry)
+
+| key strategy | same-args retry | reworded retry |
+| --- | --- | --- |
+| position key (`workflow:step:tool`) | 1 dup, all deduped | 3 dups avg, **33% deduped** (2.67 caller-bug rejections) |
+| content hash (sha256 of args) | 1 dup, all deduped | **1 dup, 0% deduped — the hash changed, the dedup missed** |
+| no key | 1.33 dups, 0% deduped | 1 dup, 0% deduped |
+
+The core result: **a content-hash key silently fails exactly when the model rewords the arguments on retry** — which is what LLM retries do (they re-reason, not replay). A position-derived key survives rewording because it identifies the *intent* (workflow position), not the bytes. Every duplicate carried a distinct tool_call ID on the wire, so nothing at the protocol layer would have caught them.
+
+### Audit-under-retry (trace-only auditor, 8th fact: duplicate detection)
+
+The proxy records every attempt, so per-run audit recovery stayed at 100% for rationale, duplicate visibility, dedup provability, and retry evidence across all six cells. An auditor reading only the traces can see the duplicate, see which attempt was deduped, and see why (the ledger result is in the tool response) — but only because the recording is at the wire level. Framework-level trace surfaces would not show the double-fire at all.
 
 ## Observability design
 

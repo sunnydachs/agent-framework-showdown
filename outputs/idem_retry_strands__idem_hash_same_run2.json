@@ -1,0 +1,44 @@
+{
+ "framework": "strands",
+ "task": "idem_retry",
+ "idem_mode": "hash",
+ "retry_specs_initial": 1,
+ "run_label": "strands__idem_hash_same_run2",
+ "elapsed_s": 9.29,
+ "n_publish_execs_inproc": 2,
+ "exec_log": [
+  {
+   "args": {
+    "article": "**Tech News Digest — AI Agents Today**\n\nOpen-source agent frameworks have hit a major production milestone, with adoption tripling as enterprises embrace autonomous AI. Model-driven agents are quietly replacing hand-coded orchestration in startups, while tool-calling reliability emerges as the new benchmark for frontier models. Meanwhile, multi-agent swarms are moving from demos into regulated enterprise workflows, and observability standards are finally taking shape to trace agent decisions end to end. The era of autonomous, production-grade AI agents is unmistakably underway.",
+    "note": ""
+   },
+   "result": {
+    "deduped": false,
+    "status": "SUCCESS",
+    "result": {
+     "status": "published",
+     "chars": 584
+    }
+   },
+   "error": null,
+   "exec_s": 2.04
+  },
+  {
+   "args": {
+    "article": "**Tech News Digest — AI Agents Today**\n\nOpen-source agent frameworks have hit a major production milestone, with adoption tripling as enterprises embrace autonomous AI. Model-driven agents are quietly replacing hand-coded orchestration in startups, while tool-calling reliability emerges as the new benchmark for frontier models. Meanwhile, multi-agent swarms are moving from demos into regulated enterprise workflows, and observability standards are finally taking shape to trace agent decisions end to end. The era of autonomous, production-grade AI agents is unmistakably underway.",
+    "note": ""
+   },
+   "result": {
+    "deduped": true,
+    "status": "SUCCESS",
+    "result": {
+     "status": "published",
+     "chars": 584
+    }
+   },
+   "error": null,
+   "exec_s": 2.0
+  }
+ ],
+ "result": "Today's tech news digest has been published successfully! Here's a summary of what went live:\n\n**Status: Published ✅**\n\nThe digest covered five key AI agent stories — from open-source frameworks tripling adoption in production, to model-driven agents replacing hand-coded orchestration, to multi-agent swarms entering regulated enterprise workflows and the emergence of observability standards for AI"
+}

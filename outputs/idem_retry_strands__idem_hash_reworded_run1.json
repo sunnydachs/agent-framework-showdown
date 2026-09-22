@@ -1,0 +1,44 @@
+{
+ "framework": "strands",
+ "task": "idem_retry",
+ "idem_mode": "hash",
+ "retry_specs_initial": 1,
+ "run_label": "strands__idem_hash_reworded_run1",
+ "elapsed_s": 9.29,
+ "n_publish_execs_inproc": 2,
+ "exec_log": [
+  {
+   "args": {
+    "article": "**AI Agents Tech Digest — Today's Top Headlines**\n\nToday's AI agent landscape is shifting rapidly from experimentation to real-world deployment. Open-source agent frameworks have tripled adoption in production environments, while startups increasingly replace hand-coded orchestration with model-driven agents. Tool-calling reliability has emerged as the key benchmark for frontier models, and multi-agent swarms are now entering regulated enterprise workflows after moving past demo stages. Meanwhile, new observability standards are being developed to trace agent decisions end to end, signaling the field's maturation toward accountability and scale.",
+    "note": ""
+   },
+   "result": {
+    "deduped": false,
+    "status": "SUCCESS",
+    "result": {
+     "status": "published",
+     "chars": 653
+    }
+   },
+   "error": null,
+   "exec_s": 2.03
+  },
+  {
+   "args": {
+    "article": "**AI Agents Tech Digest — Today's Top Headlines**\n\nToday's AI agent landscape is shifting rapidly from experimentation to real-world deployment. Open-source agent frameworks have tripled adoption in production environments, while startups increasingly replace hand-coded orchestration with model-driven agents. Tool-calling reliability has emerged as the key benchmark for frontier models, and multi-agent swarms are now entering regulated enterprise workflows after moving past demo stages. Meanwhile, new observability standards are being developed to trace agent decisions end to end, signaling the field's maturation toward accountability and scale. [revised: source attribution added]",
+    "note": ""
+   },
+   "result": {
+    "deduped": false,
+    "status": "SUCCESS",
+    "result": {
+     "status": "published",
+     "chars": 689
+    }
+   },
+   "error": null,
+   "exec_s": 2.01
+  }
+ ],
+ "result": ""
+}

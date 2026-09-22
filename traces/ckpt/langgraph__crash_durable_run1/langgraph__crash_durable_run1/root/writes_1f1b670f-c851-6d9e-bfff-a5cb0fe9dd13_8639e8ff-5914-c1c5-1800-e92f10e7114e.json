@@ -1,0 +1,1 @@
+[{"channel": "headlines", "type": "msgpack", "blob": "kA=="}, {"channel": "draft", "type": "msgpack", "blob": "oA=="}, {"channel": "approved", "type": "msgpack", "blob": "wg=="}, {"channel": "published", "type": "msgpack", "blob": "wg=="}, {"channel": "branch:to:write", "type": "null", "blob": ""}]

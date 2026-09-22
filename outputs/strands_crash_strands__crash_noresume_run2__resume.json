@@ -1,0 +1,10 @@
+{
+ "framework": "strands",
+ "phase": "resume",
+ "run_label": "strands__crash_noresume_run2",
+ "state_survived": false,
+ "rerun": true,
+ "resume_s": 6.25,
+ "resume_error": null,
+ "resume_tail": "The article has been approved and published! Here's what happened:\n\n1. ✅ **Fetched headlines** — Retrieved 5 top stories about AI agents\n2. ✅ **Wrote digest** — Summarized the headlines in ~60 words\n3. ✅ **Submitted for review** — The reviewer approved the draft\n4. ✅ **Published successfully** — The"
+}

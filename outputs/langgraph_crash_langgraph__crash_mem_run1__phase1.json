@@ -1,0 +1,8 @@
+{
+ "framework": "langgraph",
+ "phase": "run",
+ "checkpointer": "mem",
+ "run_label": "langgraph__crash_mem_run1",
+ "phase1_s": 4.75,
+ "interrupted": true
+}

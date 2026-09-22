@@ -1,0 +1,23 @@
+{
+  "message": {
+    "role": "user",
+    "content": [
+      {
+        "toolResult": {
+          "toolUseId": "call_f7a184d0f01c42388db9c43d",
+          "status": "success",
+          "content": [
+            {
+              "text": "{\"approved\": true, \"reviewer\": \"scripted-reviewer\"}"
+            }
+          ]
+        }
+      }
+    ],
+    "tracking_id": "ad9700b9-d7bc-4b0f-b95d-7f59cbba2803"
+  },
+  "message_id": 23,
+  "redact_message": null,
+  "created_at": "2026-09-22T10:55:39.064425+00:00",
+  "updated_at": "2026-09-22T10:55:39.064429+00:00"
+}

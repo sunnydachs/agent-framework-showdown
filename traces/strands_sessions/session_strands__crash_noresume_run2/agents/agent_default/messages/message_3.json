@@ -1,0 +1,43 @@
+{
+  "message": {
+    "role": "assistant",
+    "content": [
+      {
+        "reasoningContent": {
+          "reasoningText": {
+            "text": "Now I need to write a digest of about 60 words summarizing these headlines, then ask for approval before publishing."
+          }
+        }
+      },
+      {
+        "text": "Here's my draft digest:\n\n---\n\n**AI Agents Daily Digest**\n\nOpen-source agent frameworks have reached a production milestone with adoption tripling, while model-driven agents are increasingly replacing hand-coded orchestration in startups. Tool-calling reliability has emerged as the new benchmark for frontier models. Meanwhile, multi-agent swarms are transitioning from demos to regulated enterprise workflows, and the industry is finally establishing observability standards for tracing agent decisions end to end.\n\n---\n\nLet me submit this for review."
+      },
+      {
+        "toolUse": {
+          "toolUseId": "call_bf213ae288314e408d62f092",
+          "name": "ask_to_publish",
+          "input": {
+            "article": "AI Agents Daily Digest\n\nOpen-source agent frameworks have reached a production milestone with adoption tripling, while model-driven agents are increasingly replacing hand-coded orchestration in startups. Tool-calling reliability has emerged as the new benchmark for frontier models. Meanwhile, multi-agent swarms are transitioning from demos to regulated enterprise workflows, and the industry is finally establishing observability standards for tracing agent decisions end to end.",
+            "summary": "A summary of the top 5 AI agents headlines covering open-source adoption, model-driven orchestration, tool-calling benchmarks, multi-agent enterprise workflows, and observability standards."
+          }
+        }
+      }
+    ],
+    "metadata": {
+      "usage": {
+        "inputTokens": 285,
+        "outputTokens": 254,
+        "totalTokens": 539
+      },
+      "metrics": {
+        "latencyMs": 0,
+        "timeToFirstByteMs": 2259
+      }
+    },
+    "tracking_id": "66b2ba26-77a3-4f29-baad-8fff7f628cd1"
+  },
+  "message_id": 3,
+  "redact_message": null,
+  "created_at": "2026-09-22T11:06:13.322676+00:00",
+  "updated_at": "2026-09-22T11:06:13.322684+00:00"
+}

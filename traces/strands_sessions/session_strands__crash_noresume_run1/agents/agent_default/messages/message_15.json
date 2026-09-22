@@ -1,0 +1,26 @@
+{
+  "message": {
+    "role": "assistant",
+    "content": [
+      {
+        "text": "The article has been published successfully! 🎉\n\n**Status:** Published — The AI agents tech news digest is now live, covering open-source adoption milestones, model-driven orchestration, tool-calling benchmarks, multi-agent swarms in enterprise, and emerging observability standards."
+      }
+    ],
+    "metadata": {
+      "usage": {
+        "inputTokens": 1173,
+        "outputTokens": 55,
+        "totalTokens": 1228
+      },
+      "metrics": {
+        "latencyMs": 0,
+        "timeToFirstByteMs": 948
+      }
+    },
+    "tracking_id": "fa46f3b9-3366-48f8-b72f-ffd2c4088cf8"
+  },
+  "message_id": 15,
+  "redact_message": null,
+  "created_at": "2026-09-22T10:35:46.579428+00:00",
+  "updated_at": "2026-09-22T10:35:46.579445+00:00"
+}

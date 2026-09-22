@@ -1,0 +1,43 @@
+{
+  "message": {
+    "role": "assistant",
+    "content": [
+      {
+        "reasoningContent": {
+          "reasoningText": {
+            "text": "I'll follow the workflow as specified. First, let me fetch headlines about AI agents."
+          }
+        }
+      },
+      {
+        "text": "I'll start by fetching the latest headlines about AI"
+      },
+      {
+        "toolUse": {
+          "toolUseId": "call_70b79dd0e64b4b44b94577c4",
+          "name": "get_headlines",
+          "input": {
+            "count": 5,
+            "topic": "AI agents"
+          }
+        }
+      }
+    ],
+    "metadata": {
+      "usage": {
+        "inputTokens": 706,
+        "outputTokens": 61,
+        "totalTokens": 767
+      },
+      "metrics": {
+        "latencyMs": 0,
+        "timeToFirstByteMs": 1550
+      }
+    },
+    "tracking_id": "bf3b7c7d-4a41-4197-acb0-b522f0c44ecf"
+  },
+  "message_id": 9,
+  "redact_message": null,
+  "created_at": "2026-09-22T10:35:43.057611+00:00",
+  "updated_at": "2026-09-22T10:35:43.057619+00:00"
+}

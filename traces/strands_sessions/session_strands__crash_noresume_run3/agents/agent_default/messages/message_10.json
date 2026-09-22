@@ -1,0 +1,33 @@
+{
+  "message": {
+    "role": "assistant",
+    "content": [
+      {
+        "reasoningContent": {
+          "reasoningText": {
+            "text": "The article has been successfully published. Here's a summary of what happened:\n\n1. I fetched 5 headlines about \"AI agents\"\n2. I wrote a ~60-word digest summarizing them\n3. I submitted it for review and it was approved\n4. I published it successfully\n\nThe process is complete."
+          }
+        }
+      },
+      {
+        "text": "Done! Here's a summary of what happened:\n\n1. **Fetched headlines** on \"AI agents\" — covering open-source frameworks, model-driven orchestration, tool-calling benchmarks, multi-agent swarms, and observability standards.\n2. **Wrote a ~60-word digest** summarizing the key stories.\n3. **Submitted for review** and received approval.\n4. **Published successfully** ✅\n\nToday's digest highlights how the AI agent ecosystem is rapidly maturing from experimental demos to production-grade, regulated infrastructure."
+      }
+    ],
+    "metadata": {
+      "usage": {
+        "inputTokens": 840,
+        "outputTokens": 108,
+        "totalTokens": 948
+      },
+      "metrics": {
+        "latencyMs": 0,
+        "timeToFirstByteMs": 1206
+      }
+    },
+    "tracking_id": "5c092889-b6c8-4c50-80a2-78d40a2aa5aa"
+  },
+  "message_id": 10,
+  "redact_message": null,
+  "created_at": "2026-09-22T11:06:44.996808+00:00",
+  "updated_at": "2026-09-22T11:06:44.996816+00:00"
+}

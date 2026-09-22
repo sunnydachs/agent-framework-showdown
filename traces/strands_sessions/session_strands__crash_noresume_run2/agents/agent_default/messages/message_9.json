@@ -1,0 +1,23 @@
+{
+  "message": {
+    "role": "user",
+    "content": [
+      {
+        "toolResult": {
+          "toolUseId": "call_c652ff1502e74be18ffbed62",
+          "status": "success",
+          "content": [
+            {
+              "text": "{\"approved\": true, \"reviewer\": \"scripted-reviewer\"}"
+            }
+          ]
+        }
+      }
+    ],
+    "tracking_id": "6f02ea29-1e71-43c6-85d6-0e1dc481a135"
+  },
+  "message_id": 9,
+  "redact_message": null,
+  "created_at": "2026-09-22T11:06:23.526740+00:00",
+  "updated_at": "2026-09-22T11:06:23.526744+00:00"
+}
