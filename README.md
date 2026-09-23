@@ -123,7 +123,7 @@ The `word_count` tool's argument was renamed (`text` -> `content`). All three fr
 
 A durable checkpointer is the difference between *resume* and *redo*. LangGraph's 0.01s resume is the checkpointer restoring the graph — no LLM call at all. Without it, an identical-looking "resume" is a full re-run paying full token cost again.
 
-The issue-8764 shape (crash before the first durable checkpoint): on the tested LangGraph version the empty-thread resume **succeeded without raising** instead of raising `EmptyInputError` — the failure-record gap behavior is version-dependent, so don't rely on the error either way; keep an external acceptance ledger.
+The issue-8764 shape (crash before the first durable checkpoint): on the tested LangGraph version the empty-thread resume **succeeded without raising** instead of raising `EmptyInputError` — `Command(resume=...)`, `invoke(None)`, and a MemorySaver resume all silently re-ran the graph (1 extra LLM call measured), while a crash inside the first node still leaves the durable input checkpoint, so the error window exists only before that first write. The failure-record gap is version-dependent: don't rely on the error either way — keep an external acceptance ledger.
 
 ### Idempotency (retry re-executes: average duplicate executions per retry)
 

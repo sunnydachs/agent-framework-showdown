@@ -123,7 +123,7 @@ python3 runs/run_crash_idem.py && python3 runs/analyze_crash_idem.py
 
 durable checkpointerは**再開**と**やり直し**の分かれ目。LangGraphの0.01秒はcheckpointerがグラフを復元する時間で、LLM呼び出しは一切不要。なしでは同じ「再開」に見えても実際はフル再実行でトークンコストを全額払い直す。
 
-issue-8764の形状(最初のdurable checkpoint前にクラッシュ): テストしたLangGraphバージョンでは空スレッドの再開は**エラーを上げずに成功した**(`EmptyInputError`は未発生)。失敗記録ギャップの挙動はバージョン依存なので、エラーの有無に頼らず外部のacceptance ledgerを持つこと。
+issue-8764の形状(最初のdurable checkpoint前にクラッシュ): テストしたLangGraphバージョンでは空スレッドの再開は**エラーを上げずに成功した**(`EmptyInputError`は未発生)— `Command(resume=...)`も`invoke(None)`もMemorySaverでの再開も、グラフを黙ってゼロから再実行しました(実測でLLM呼び出し1回が余分に発生)。一方、最初のノード内部でクラッシュしてもdurable input checkpointは残るため、エラーウィンドウはその最初の書き込み前にのみ存在します。失敗記録ギャップの挙動はバージョン依存なので、エラーの有無に頼らず外部のacceptance ledgerを持つこと。
 
 ### 冪等性(リトライ時の重複実行、3ラン平均)
 
