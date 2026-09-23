@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0"
+  xmlns:excerpt="http://wordpress.org/export/1.2/excerpt/"
+  xmlns:content="http://purl.org/rss/1.0/modules/content/"
+  xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+  xmlns:dc="http://purl.org/dc/elements/1.1/"
+  xmlns:wp="http://wordpress.org/export/1.2/">
+<channel>
+  <title>note import</title>
+  <link>https://note.com</link>
+  <description>note import</description>
+  <pubDate>Wed, 23 Sep 2026 11:18:40 +0000</pubDate>
+  <language>ja</language>
+  <wp:wxr_version>1.2</wp:wxr_version>
+  <item>
+    <title>エージェントがクラッシュしたら状態は生き残るのか、LLMのリトライはなぜ同じ副作用を二度実行するのか【34ラン実測】</title>
+    <dc:creator><![CDATA[sunnydachs]]></dc:creator>
+    <description></description>
+    <content:encoded><![CDATA[
+<h2>はじめに: この記事で扱う2つの悩み</h2>
+<p>エージェントに「外部への影響がある作業」を任せるとき、2つの悩みが必ず出てきます。</p>
+<p>1つ目は「プロセスが死んだら、途中までの作業はどうなるのか」。</p>
+<p>承認待ちで止まっていたエージェントのプロセスが落ちたら、再開できるのか、それともゼロからやり直しか。</p>
+<p>2つ目は「LLMがリトライしたとき、同じ副作用を二度実行しないのか」。</p>
+<p>メール送信やデータ更新のような操作をリトライしたら、同じ操作が二重に走るリスクは現実にあるのか。</p>
+<p>前回の記事で、HITL承認・監査証跡・構造化出力の3点を3フレームワークで測定しました。</p>
+<p>その中で「Strandsが同一原稿でpublish呼び出しを二重発火した」という失敗を記録しています。</p>
+<p>今回はその先を34ランで測りました。</p>
+<p>対象リポジトリ(全コード・全トレース・全解析スクリプト公開):</p>
+<p><a href="https://github.com/sunnydachs/agent-framework-showdown">https://github.com/sunnydachs/agent-framework-showdown</a></p>
+<p>(前回の記事: <a href="https://note.com/sunnydachs/n/n25bc1cd24a2">https://note.com/sunnydachs/n/n25bc1cd24a2</a>d)</p>
+<h2>実験の設計</h2>
+<p>同じタスク・同じモデル・同じ記録プロキシで、3フレームワーク×3セル×複数ランを測定しました。</p>
+<pre><code>[エージェント] → [承認ゲート] → [publish(破壊的操作)]
+       ↑                ↑
+   クラッシュさせる   承認待ちで止まる</code></pre>
+<p>測定した3セル:</p>
+<ul>
+<li>セルA: クラッシュ復旧。承認待ちで止まっているプロセスをSIGKILLで強制終了し、新プロセスがそこから再開できるか</li>
+<li>セルB: 冪等性。publishを3種のキー戦略(位置キー/コンテンツハッシュ/キーなし)で呼び、リトライ時の重複実行を数える</li>
+<li>セルC: リトライ後監査。トレースだけを読む監査人が「重複を検出できるか」をスコア化</li>
+</ul>
+<p>冪等性のキー戦略は次の3つです。</p>
+<pre><code>位置キー:        {workflow}:{step}:{tool}
+コンテンツハッシュ: sha256(引数そのもの)
+キーなし:        何も持たない</code></pre>
+<h2>セルA: クラッシュ復旧 — durable checkpointerが「再開」と「やり直し」を分ける</h2>
+<p>承認待ちで止まっているエージェントのプロセスをSIGKILLで落とし、新プロセスから再開した結果です。</p>
+<table><tr><th>フレームワーク</th><th>再開時間</th><th>状態生存</th><th>再開のLLM呼び出し</th></tr><tr><td>LangGraph(durable checkpointerあり)</td><td>0.01〜0.02秒</td><td>3/3</td><td>ゼロ</td></tr><tr><td>LangGraph(checkpointerなし)</td><td>-</td><td>0/3</td><td>-</td></tr><tr><td>Strands</td><td>平均4.9秒</td><td>フル再実行</td><td>平均5.3回</td></tr><tr><td>CrewAI</td><td>平均4.2秒</td><td>フル再実行</td><td>平均2.0回</td></tr></table>
+<p>LangGraphのdurable checkpointerは、プロセスが死んでもグラフ状態をディスクに永続化しています。</p>
+<p>新プロセスが0.01秒でその位置まで復元します。</p>
+<p>LLM呼び出しは一切不要。</p>
+<p><b>「再開」と「やり直し」の違いは、状態がプロセスの外に生きているかどうかだけ</b>です。</p>
+<p>checkpointerなしだと、同じ「再開」に見えても実際はフル再実行です。</p>
+<p>Strandsは平均5.3回のLLM呼び出しをもう一度走らせ、トークンコストを全額払い直します。</p>
+<h3>最初のチェックポイント保存前にクラッシュしたら</h3>
+<p>LangGraphには既知の課題(issue #8764)があります。</p>
+<p>プロセスが最初のチェックポイント永続化前に死亡すると、recoveryにチェックポイントが存在しません。</p>
+<p>runを受け付けた痕跡すら残らない可能性があります。</p>
+<p>今回のバージョンでは空スレッドの再開はエラーを上げずに成功したので、<b>挙動はバージョン依存です</b>。</p>
+<p>エラーの有無に頼らず、外部のacceptance ledgerを持つのが安全です。</p>
+<h2>セルB: 冪等性 — コンテンツハッシュキーは言い換えで静かに失效する</h2>
+<p>LLMがリトライでpublishをもう一度呼んだとき、重複実行を防げたかの平均値です。</p>
+<table><tr><th>キー戦略</th><th>同一引数リトライ</th><th>言い換えリトライ</th></tr><tr><td>位置キー</td><td>重複1、全てdedup</td><td>重複3、33% dedup+残りはcaller-bug拒否</td></tr><tr><td>コンテンツハッシュ</td><td>重複1、全てdedup</td><td>重複1、0% dedup(すり抜け)</td></tr><tr><td>キーなし</td><td>重複1.33、0% dedup</td><td>重複1、0% dedup</td></tr></table>
+<p>ここが今回の核心です。コンテンツハッシュキーは、モデルがリトライで引数を言い換えた瞬間に静かに失效します。</p>
+<p>理由はシンプルです。</p>
+<p>LLMのリトライは、保存したHTTPリクエストをそのままreplayするのではありません。</p>
+<p>タイムアウトエラーを含むcontextからもう一度推論して、新しいツール呼び出しを生成します。</p>
+<p>引数は言い換えられ、順序は変わり、フィールドが増える。</p>
+<p>sha256(引数)をキーにしていたら、リトライは別のハッシュを生成して、dedupのチェックを素通りして、副作用をもう一度実行します。</p>
+<p>位置キー({workflow}:{step}:{tool})は、引数のバイト列ではなく<b>意図</b>を識別します。</p>
+<p>workflow内の位置がキーになるので、言い換えに耐えます。</p>
+<p>同じ位置からの同じ操作は、引数がどう変わっても同じキーになります。</p>
+<p>もう1つの実測: 重複実行されたpublishは、ワイヤー上で<b>すべて異なるtool_call ID</b>を持っていました。</p>
+<p>プロトコル層では「同じ操作の2回目」であることは何も検出できません。</p>
+<p>検出できるのは記録レベルだけです。</p>
+<p>なお、位置キー戦略では「同じ位置・異なる引数」の呼び出しをcaller-bugとして拒否します(今回の34ラン中2.67回)。</p>
+<p>これは「意図が変わったのにキーを使い回している」状態を検出する設計です。</p>
+<h2>セルC: リトライ後監査 — トレースだけの監査人</h2>
+<p>監査人がトレースだけを読んで、次の4点を復元できるかをスコア化しました。</p>
+<ul>
+<li>決定根拠が読めるか: 全セル100%</li>
+<li>重複が検出できるか: 全セル100%</li>
+<li>dedupが証明できるか(どの試行がdedupされたか、なぜか): 全セル100%</li>
+<li>リトライの指示が見えるか: 全セル100%</li>
+</ul>
+<p>ただしこれは<b>記録がワイヤーレベルだから</b>です。</p>
+<p>プロキシはすべての試行(初回・dedup・caller-bug拒否)を個別のレコードとして保持します。</p>
+<p>監査人は何が起きたかを完全に追えます。</p>
+<p>フレームワークのトレース表面(フレームワークが持つログ)では、二重発火は一切見えません。</p>
+<p>監査可能性の設計で効くのは「どこに記録があるか」です。</p>
+<h2>最も重要な発見: 失敗の形がキー戦略で変わる</h2>
+<p>今回の34ランから、失敗の形がキー戦略ごとに完全に変わることが分かりました。</p>
+<ul>
+<li><b>コンテンツハッシュキー</b>: 失敗が静か。ハッシュが変わるだけなので、エラーも出ず、dedupも通過し、副作用だけが二重に実行される</li>
+<li>位置キー: 失敗がうるさい。「同じ位置・異なる引数」はcaller-bugとして拒否されるので、意図の変更はエラーとして表面化する</li>
+<li><b>キーなし</b>: 何も防げない。すべてのリトライが重複実行になる</li>
+</ul>
+<p>エンタープライズでエージェントを使うなら、静かな失敗が一番怖いクラスです。</p>
+<p>「ハッシュをキーにすれば安全」という直感は、呼び出し元が非決定的になった瞬間に壊れる</p>
+<p>これが今回の実測からの結論です。</p>
+<h2>正直な限界</h2>
+<ul>
+<li>3ラン/セルは方向性を示すレベルで、統計的な主張ではない</li>
+<li>承認者はスクリプト化しており、実際のUIや通知フローは持たない</li>
+<li>破壊的操作はシミュレーション(ただしゲートが機能したかは記録された通信から直接読んだ)</li>
+<li>単一モデルでの実測。別のモデルなら引数の言い換え傾向が変わりうる</li>
+</ul>
+<h2>再現方法</h2>
+<p>全コード・全トレース・全解析スクリプトが公開されています。</p>
+<p><a href="https://github.com/sunnydachs/agent-framework-showdown">https://github.com/sunnydachs/agent-framework-showdown</a></p>
+<p>READMEに全実験(34ラン+これまでの72ラン)のコマンドがあります。</p>
+<p>個人開発OSSのため動作保証はありません。issueは歓迎です。</p>
+]]></content:encoded>
+    <wp:post_date>Wed, 23 Sep 2026</wp:post_date>
+    <wp:post_date_gmt>Wed, 23 Sep 2026</wp:post_date_gmt>
+    <wp:post_name>agent-framework-showdown-crash-idem</wp:post_name>
+    <wp:status>publish</wp:status>
+    <wp:post_type>post</wp:post_type>
+    <category domain="category" nicename="technology"><![CDATA[テクノロジー]]></category>
+    <category domain="tag" nicename="ai-agent"><![CDATA[AIエージェント]]></category>
+    <category domain="tag" nicename="llm"><![CDATA[LLM]]></category>
+    <category domain="tag" nicename="langgraph"><![CDATA[LangGraph]]></category>
+    <category domain="tag" nicename="observability"><![CDATA[可観測性]]></category>
+    <category domain="tag" nicename="idempotency"><![CDATA[冪等性]]></category>
+  </item>
+</channel>
+</rss>
