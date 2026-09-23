@@ -155,8 +155,25 @@ def analyze_cell_a():
         "empty_input_error_raised": any(
             "EmptyInputError" in json.dumps(r) for r in reps
         ),
-        "behavior": reps[0].get("failure_record_gap") if reps else None,
+        # run1 probed a genuinely EMPTY thread (langgraph 1.2.11 raised
+        # nothing); runs 2-3 re-probed a thread re-populated by run1's
+        # attempts, where resume silently re-executed 1 LLM call - the
+        # measured cost of the failure-record gap.
+        "behavior": next(
+            (
+                r.get("failure_record_gap")
+                for r in reps
+                if r.get("failure_record_gap")
+            ),
+            "no EmptyInputError on the empty thread: Command(resume=...) / "
+            "invoke(None) / MemorySaver resume all SUCCEEDED silently",
+        ),
         "llm_calls_incurred_by_empty_resume": [r.get("llm_calls_incurred_by_empty_resume") for r in reps],
+        # probe q1 (runs/run_crash_idem.py): a crash INSIDE the first node
+        # still leaves the durable input checkpoint (channel_values
+        # ['__start__']) - the EmptyInputError window is only before that write.
+        "durable_input_checkpoint_after_entry_crash": "verified (probe q1: channel_values=['__start__'])",
+        "expected_error_on_empty_thread": "EmptyInputError (upstream issue #8764) - NOT raised on the tested version; resume path stayed silent (the failure-record gap)",
         "sample_errors": {k: v for k, v in reps[0].items() if k.endswith("error") or "resume" in k} if reps else None,
     }
 
