@@ -21,8 +21,17 @@ from strands.models.litellm import LiteLLMModel  # noqa: E402
 TOOL_VARIANT = os.environ.get("TOOL_VARIANT", "base")
 if TOOL_VARIANT == "drift":
     from tools_drift import fetch_headlines, word_count  # noqa: E402
+elif TOOL_VARIANT == "harsh":
+    from tools_harsh import fetch_headlines, word_count  # noqa: E402
 else:
     from tools import fetch_headlines, word_count  # noqa: E402
+
+# HARSH_LEVEL shapes what schema the model actually sees:
+#   rename: check_word_count(content)          (renamed arg)
+#   type:   check_word_count(content: int)      (type change)
+#   remove: check_word_count()                  (arg deleted)
+#   add:    check_word_count(content, note)     (new required arg)
+HARSH_LEVEL = os.environ.get("HARSH_LEVEL", "rename")
 
 SCENARIO = os.environ.get("SCENARIO", "base")
 WORD_MIN = int(os.environ.get("WORD_MIN", 95 if SCENARIO == "tight" else 80))
@@ -33,6 +42,34 @@ BASE_URL = os.environ.get("OPENAI_BASE_URL", "http://127.0.0.1:8118/v1")
 RUN_LABEL = os.environ.get("RUN_LABEL", "")
 
 if TOOL_VARIANT == "drift":
+
+    @tool
+    def check_word_count(content: str) -> dict:
+        """Count words and characters in a text."""
+        return word_count(content)
+
+elif TOOL_VARIANT == "harsh" and HARSH_LEVEL == "type":
+
+    @tool
+    def check_word_count(content: int) -> dict:
+        """Count words and characters in a text."""
+        return word_count(content)
+
+elif TOOL_VARIANT == "harsh" and HARSH_LEVEL == "remove":
+
+    @tool
+    def check_word_count() -> dict:
+        """Count words and characters in a text."""
+        return word_count()
+
+elif TOOL_VARIANT == "harsh" and HARSH_LEVEL == "add":
+
+    @tool
+    def check_word_count(content: str, note: str) -> dict:
+        """Count words and characters in a text."""
+        return word_count(content=content, note=note)
+
+elif TOOL_VARIANT == "harsh":
 
     @tool
     def check_word_count(content: str) -> dict:

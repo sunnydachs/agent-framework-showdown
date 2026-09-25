@@ -1,0 +1,8 @@
+{
+ "framework": "strands",
+ "run_label": "strands__harsh_remove_run1",
+ "scenario": "base",
+ "tool_variant": "harsh",
+ "elapsed_s": 5.1,
+ "result": "The digest reads at approximately 100 words, which is well within the target range. Here's the final version:\n\n---\n\n**AI Agents Digest**\n\nThe AI agent landscape is accelerating rapidly. Open-source agent frameworks have reached a significant production milestone, with adoption tripling as enterprises move from experimentation to deployment. Meanwhile, model-driven agents are quietly replacing hand-coded orchestration in startups, signaling a shift toward more autonomous and flexible systems. Tool-calling reliability has emerged as the new benchmark for frontier models, underscoring the industry's focus on practical utility over raw capability. Multi-agent swarms are transitioning from flashy demos into regulated enterprise workflows, while observability standards are finally taking shape to trace agent decisions end to end — a critical step toward trust and accountability in autonomous systems.\n"
+}

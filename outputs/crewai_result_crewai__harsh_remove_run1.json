@@ -1,0 +1,8 @@
+{
+ "framework": "crewai",
+ "run_label": "crewai__harsh_remove_run1",
+ "scenario": "base",
+ "tool_variant": "harsh",
+ "elapsed_s": 15.55,
+ "result": "Open-source agent frameworks have reached a significant production milestone, with adoption tripling across the technology industry. Model-driven agents are quietly replacing hand-coded orchestration systems in startups, signaling a fundamental shift in how modern applications are built. Tool-calling reliability has emerged as the new benchmark for frontier models, pushing developers to prioritize precision and consistency. Meanwhile, multi-agent swarms are transitioning from experimental demos to regulated enterprise workflows, bringing greater accountability to complex automation. As these autonomous systems mature, observability standards are finally emerging, enabling teams to trace agent decisions end to end and build lasting trust in AI-driven operations."
+}

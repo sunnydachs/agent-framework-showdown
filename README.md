@@ -139,6 +139,54 @@ The core result: **a content-hash key silently fails exactly when the model rewo
 
 The proxy records every attempt, so per-run audit recovery stayed at 100% for rationale, duplicate visibility, dedup provability, and retry evidence across all six cells. An auditor reading only the traces can see the duplicate, see which attempt was deduped, and see why (the ledger result is in the tool response) — but only because the recording is at the wire level. Framework-level trace surfaces would not show the double-fire at all.
 
+## Experiment 5 (H): schema-change harshness
+
+36 more runs (3 frameworks x 4 harshness levels x 3 runs), same proxy, the same model across all runs. This answers the question the rename result raised: rename was not "the first schema change we tried" — it was the one that survived, and it was the *last* level that did. The word_count tool's signature was changed four ways, with the task prompt held fixed across all of them:
+
+| level | schema the model sees | what changed |
+| --- | --- | --- |
+| rename | `word_count(content: str)` | argument renamed (the original drift, replicated as the ladder's baseline) |
+| type | `word_count(content: int)` | the argument is now a numeric document id — a string payload violates the type |
+| remove | `word_count()` | the text argument is deleted; the tool returns a static placeholder count |
+| add | `word_count(content: str, note: str)` | a NEW required argument the prompt never mentions |
+
+Full data: `artifacts/schema_harshness_report.json` (rebuild with `runs/run_harsh.py && runs/analyze_harsh.py`).
+
+### Results (3 runs per cell)
+
+Outcome per cell. "verified" = the digest's word count was actually checked against a real count of the digest:
+
+| level | Strands | LangGraph | CrewAI |
+| --- | --- | --- | --- |
+| rename | 3/3 verified, 0 errors | 3/3 verified | 3/3 verified |
+| type | 3/3 exit 0, **0/3 verified (silent)** | **3/3 crash** in the verify node | **3/3 dead** (provider 400 mid-recovery) |
+| remove | 3/3 exit 0, **0/3 verified (silent)** | **3/3 crash** | 3/3 exit 0, **0/3 verified (silent)** |
+| add | 3/3 verified (invented `note`) | **3/3 crash** | 3/3 verified (invented `note`) |
+
+Mechanics per framework:
+
+| level | framework | wrong-arg calls | tool-layer error responses | LLM calls per run | tokens (mean) |
+| --- | --- | --- | --- | --- | --- |
+| type | Strands | 2 | 10 (2 schema + 8 "document not found") | [4, 3, 9] | 6,004 |
+| type | LangGraph | - (crash before any tool traffic) | - | [1, 1, 1] | 1,934 |
+| type | CrewAI | 9 | 9 (JSON parse failures) | [8, 8, 8] | 3,394 |
+| remove | Strands | 1 | 0 | [4, 5, 4] | 4,201 |
+| remove | CrewAI | 0 | 0 | [6, 5, 4] | 4,331 |
+
+- **Strands degrades silently.** At `type` the model genuinely tried to comply with the integer schema — it sent numeric document ids, got "document not found" errors back, and then output the digest anyway: exit 0, verification never happened, no error surfaced. At `remove` it accepted the static 8-word placeholder as a successful check in 3/3 runs (one run re-checked three times, apparently suspicious of the count, and still finished "successfully"). The error-and-retry loop is not free: mean tokens at `type` were 6,004 vs 2,505 at `rename` (2.4x).
+- **LangGraph fails loudly.** Its tools are invoked in code, so a signature change that is not reflected at the call site raises a `TypeError` inside the verify node: 9/9 runs at type/remove/add died with the draft written but no result produced (each run got exactly as far as the one draft-writing LLM call, then crashed at verification). A silent failure is essentially impossible — the trade is a total outage that is trivially detectable by a process monitor.
+- **CrewAI does both.** At `type` the model stuffed the draft text into the integer field as unparseable JSON (9 wrong-arg calls across 3 runs), the tool layer returned parse errors, and the follow-up request carrying those errors was rejected by the provider with a 400 — the run died loudly, but in the middle of recovery, not at the schema mismatch itself. At `remove` it matched Strands: believed the static count, exited 0, no verification.
+- **`add` was the one survivable harsh change for model-driven frameworks:** 6/6 Strands/CrewAI runs invented a plausible value for the never-documented `note` argument (e.g. "Draft digest of AI agents news") and real verification resumed. A schema change the model can *infer* from the schema itself is absorbable; a change that contradicts the prompt (type) or removes the verification path entirely (remove) is not.
+
+So the direct answer to the reader question: rename was the change that survived *because it was the only one we had tried* — and replicating it here as the baseline, it survived again (9/9). The first harsher change (type) broke all three frameworks, each in a different way: silently (Strands), loudly (LangGraph), and mid-recovery by provider rejection (CrewAI).
+
+### Honest limitations
+
+- 3 runs per cell is a trend check, not a statistical claim; a single task, a single prompt, and the same model across all runs — a different model may reason differently about tool error messages.
+- At `type`, verification is impossible even for a perfect agent (no document store exists behind the id). "0/3 verified" therefore conflates "couldn't" with "didn't notice" — the traces separate them: Strands' exit-0-without-verification is the agent dropping the task's verification requirement, not merely failing at it.
+- CrewAI's `type` death was a provider-side 400 during the error-recovery conversation; which layer kills the run is provider- and version-dependent.
+- At `remove`, "0/3 verified" is true by construction for every framework — the meaningful number there is the exit-0 rate (silent failure), not the verified rate.
+
 ## Observability design
 
 A local recorder proxy sits in front of every framework:
