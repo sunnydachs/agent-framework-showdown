@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0"
+  xmlns:excerpt="http://wordpress.org/export/1.2/excerpt/"
+  xmlns:content="http://purl.org/rss/1.0/modules/content/"
+  xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+  xmlns:dc="http://purl.org/dc/elements/1.1/"
+  xmlns:wp="http://wordpress.org/export/1.2/">
+<channel>
+  <title>sunnydachs note</title>
+  <link>https://note.com/sunnydachs</link>
+  <description></description>
+  <item>
+    <title>ツールのスキーマを変更したら、エージェントはどこまで壊れるのか【36ラン実測】</title>
+    <link>https://note.com/sunnydachs/</link>
+    <pubDate>Sat, 26 Sep 2026 02:08:51 +0900</pubDate>
+    <dc:creator><![CDATA[sunnydachs]]></dc:creator>
+    <guid isPermaLink="false"></guid>
+    <description></description>
+    <content:encoded><![CDATA[<p>タイトル: ツールのスキーマを変更したら、エージェントはどこまで壊れるのか【36ラン実測】</p>
+<h2>はじめに: この記事で扱う悩み</h2>
+<p>エージェントにツールを渡して運用していると、必ずこの日が来ます。</p>
+<p><b>「このツールの引数、変えたいんだけど——エージェント側は大丈夫かな」</b></p>
+<p>ツールの仕様変更(スキーマ変更)は、エージェント開発では日常的に起きます。</p>
+<p>引数のリネーム、型の変更、引数の削除、新しい必須引数の追加。</p>
+<p>プロンプトとコードを全部同時に直せれば理想です。</p>
+<p>しかし実際は「スキーマだけ先に変わって、プロンプトや呼び出し側が追いついていない」状態が必ず発生します。</p>
+<p>前回の記事で、私は27ランの比較実験を公開しました。</p>
+<p>そこで引数のリネーム(text→content)を試したところ、3フレームワークすべてが9/9で成功しました。</p>
+<p>ある読者からの質問が、この記事の出発点です。</p>
+<p>「そのリネームは、最初に試したスキーマ変更ですか? それとも、もっと過酷な変更ですべて壊れた後に生き残った変更ですか?」</p>
+<p>つまり——<b>リネームで全部うまくいったのは、たまたま一番簡単な変更だっただけでは?</b></p>
+<p>これを確かめるために、スキーマ変更を4段階の過酷さに分けて、36ランで測り直しました。</p>
+<p>対象リポジトリ(全コード・全トレース・全解析スクリプト公開):</p>
+<p><a href="https://github.com/sunnydachs/agent-framework-showdown">https://github.com/sunnydachs/agent-framework-showdown</a></p>
+<h2>実験の設計</h2>
+<p>同じタスク・同じモデル・同じ記録プロキシで、3フレームワーク × 4レベル × 3ラン = 36ランを測定しました。</p>
+<pre>[スキーマ変更の4段階]
+rename: 引数のリネーム        text → content
+type:   型の変更              str → int(ドキュメントIDに)
+remove: 引数の削除            text引数を完全に消す
+add:    新必須引数の追加       プロンプト未登場の note を追加</pre>
+<p>各レベルで変更するのは<b>word_countツールのシグネチャだけ</b>です。</p>
+<p>タスクプロンプトは全レベルで固定。</p>
+<p>「80〜120語のダイジェストを書き、word_countで語数を検証せよ」というプロンプトは、どこも一字も変えません。</p>
+<p>測るのは、プロンプトとスキーマがずれたとき、3フレームワークがどう振る舞うかです。</p>
+<p>* 誤引数: スキーマに合わない引数でツールを呼んだ回数</p>
+<p>* スキーマエラー: ツール層が呼び出しを拒否した回数</p>
+<p>* 復旧: モデルがラン内で自己修正できたか、諦めたか、そもそもエラーに気づかなかったか</p>
+<p>* サイレント失敗: exit 0なのに語数検証が一度も起きていない</p>
+<h2>結果: レベルごとに全滅の仕方が違う</h2>
+<p>各セル3ランの結果です。</p>
+<table><thead><tr><th>レベル</th><th>Strands</th><th>LangGraph</th><th>CrewAI</th></tr></thead><tbody><tr><td>rename</td><td>3/3検証成功</td><td>3/3検証成功</td><td>3/3検証成功</td></tr><tr><td>type</td><td><b>0/3検証・サイレント</b></td><td><b>3/3クラッシュ</b></td><td><b>3/3死亡</b></td></tr><tr><td>remove</td><td><b>0/3検証・サイレント</b></td><td><b>3/3クラッシュ</b></td><td><b>0/3検証・サイレント</b></td></tr><tr><td>add</td><td>3/3検証成功</td><td><b>3/3クラッシュ</b></td><td>3/3検証成功</td></tr></tbody></table>
+<p>まず、読者の質問への直接の答えです。</p>
+<p><b>リネームは「最初に試した変更」ではなく「生き残った変更」でした。</b></p>
+<p>そして、生き残れたのはラダーの最下段だけです。</p>
+<p>一段上がっただけで、3フレームワークは3つとも別々の死に方をします。</p>
+<h2>Strands: 静かに劣化する</h2>
+<p>typeレベル(引数がstr→intに変わった)でのStrandsの動きです。</p>
+<pre>モデル: 整数のドキュメントIDを真面目に送る
+ツール: 「document not found」を返す
+モデル: それでもダイジェストを出力して終了
+結果:   exit 0・語数検証ゼロ・エラー表面化なし</pre>
+<p>エラーは一度も表面化しません。</p>
+<p>トークン消費だけが2.4倍に膨らみます(rename平均2,505 → type平均6,004)。</p>
+<p>removeレベルでは、引数を削除されたツールが静かなプレースホルダ(8語)を返すようになりました。</p>
+<p>モデルはそれを3/3ランで「検証成功」と受け入れました。</p>
+<p><b>exit 0で終わるのに、何も検証していない。</b></p>
+<p>これがサイレント失敗です。</p>
+<p>前回の記事で「エージェントの失敗は静かに起きる」と書きましたが、スキーマ変更はその最悪のトリガーです。</p>
+<h2>LangGraph: 大きく失敗する</h2>
+<p>LangGraphは逆です。</p>
+<p>ツールをPythonコード内で直接呼ぶ構成のため、シグネチャ変更はそのままTypeErrorになります。</p>
+<pre>verifyノード: word_count(state[&quot;draft&quot;]) を実行
+tools_harsh:  TypeError(引数が変わっている)
+グラフ:       下書きは完成しているのに、結果を出力できずに死亡</pre>
+<p>type・remove・addの9/9ランが、すべてverifyノード内でクラッシュしました。</p>
+<p>各ランは下書き生成のLLM呼び出し1回まで進み、検証の地点で死亡します。</p>
+<p>LangGraphにはサイレント失敗が実質存在しません。</p>
+<p><b>引き換えに、どのランも結果を1つも出力できません。</b></p>
+<p>失敗はうるさいけれど、全面障害です。</p>
+<h2>CrewAI: 両方をやる</h2>
+<p>CrewAIは中間です。</p>
+<p>typeレベルでは、モデルがintフィールドにダイジェスト本文をそのまま詰め込みました。</p>
+<p>3ランで9回の誤引数呼び出し。</p>
+<p>ツール層がJSONパースエラーを返し、そのエラーを乗せた次のリクエストがプロバイダに400で拒否されました。</p>
+<pre>モデル: intフィールドに本文を流し込む
+ツール:  JSONパースエラー
+次のリクエスト: プロバイダ400 → 死亡</pre>
+<p><b>スキーマ不一致そのものではなく、復帰の途中で死亡する</b>のがCrewAIの失敗の形です。</p>
+<p>removeレベルではStrandsと同じく静かなプレースホルダを信じてexit 0。</p>
+<p>検証なし。</p>
+<h2>addだけが、モデル駆動系にとって生き残れる変更だった</h2>
+<p>興味深い逆転が1つあります。</p>
+<p>addレベル(プロンプトに登場しない新必須引数noteの追加)は、一見もっとも理不尽な変更に見えます。</p>
+<p>しかしStrandsとCrewAIは6/6ランで<b>説明されうる値を捏造</b>して検証を再開しました。</p>
+<pre>モデルの捏造例: &quot;Draft digest of AI agents news&quot;
+→ note引数として自然な説明文を推論から生成
+→ 検証が再開し、3/3成功</pre>
+<p>モデルはスキーマそのものを見て推論できます。</p>
+<p><b>スキーマから推論できる変更は吸収できる。</b></p>
+<p><b>プロンプトと矛盾する変更(type)や、検証経路そのものを消す変更(remove)は吸収できない。</b></p>
+<p>ここに実用的な教訓があります。</p>
+<p>新必須引数を追加するときは、名前と説明が「推論で埋められる」設計になっていれば、エージェントは意外と生き残ります。</p>
+<h2>失敗の形のまとめ</h2>
+<p>36ランを通して、フレームワークごとの「壊れ方」が定量で分かりました。</p>
+<table><thead><tr><th>フレームワーク</th><th>失敗の形</th><th>検知方法</th></tr></thead><tbody><tr><td>Strands</td><td>静かに劣化(exit 0・検証なし)</td><td>トレースでしか見えない</td></tr><tr><td>LangGraph</td><td>全面障害(TypeErrorで即死)</td><td>プロセス監視で即検知</td></tr><tr><td>CrewAI</td><td>復帰中に死亡(プロバイダ400)</td><td>プロセス監視+トレース両方</td></tr></tbody></table>
+<p>どのフレームワークが「安全」か——このデータからの答えは、<b>どれも単体では安全ではない</b>です。</p>
+<p>静かな失敗を持つものは監査が要り、うるさい失敗を持つものは可用性が下がる。</p>
+<p>スキーマ変更を安全に通すには、層を重ねるしかありません。</p>
+<h2>正直な限界</h2>
+<p>* 1セル3ランは方向性を示すレベルで、統計的な主張ではない</p>
+<p>* ツールはローカル関数で、実際のHTTP APIのスキーマ変更(ネットワーク・レイテンシ・ステータスコード)とは差がある</p>
+<p>* removeレベルの「静かなプレースホルダ」は実験の設計上のもの。実運用では通常エラーを返すはず</p>
+<p>* 単一モデルでの実測。スキーマからの推論能力はモデルによって変わる</p>
+<h2>再現方法</h2>
+<p>全コード・全トレース・全解析スクリプトが公開されています。</p>
+<p>READMEに全実験(これまでの108ラン+今回の36ラン)のコマンドがあります。</p>
+<p><a href="https://github.com/sunnydachs/agent-framework-showdown">https://github.com/sunnydachs/agent-framework-showdown</a></p>
+<p>※個人開発のOSSのため、動作を保証するものではありません。</p>
+<p>ご利用は自己責任でお願いします。不具合や改善案はissueで教えてもらえると嬉しいです。</p>
+<p>前回の記事(クラッシュ復旧と冪等性の34ラン実測):</p>
+<p><a href="https://note.com/sunnydachs/n/neec007b3d47a">https://note.com/sunnydachs/n/neec007b3d47a</a></p>]]></content:encoded>
+    <excerpt:encoded><![CDATA[]]></excerpt:encoded>
+    <wp:post_id>1004</wp:post_id>
+    <wp:post_date><![CDATA[2026-09-26 02:08:51]]></wp:post_date>
+    <wp:post_date_gmt><![CDATA[2026-09-26 02:08:51]]></wp:post_date_gmt>
+    <wp:comment_status><![CDATA[open]]></wp:comment_status>
+    <wp:ping_status><![CDATA[open]]></wp:ping_status>
+    <wp:post_name><![CDATA[-36-]]></wp:post_name>
+    <wp:status><![CDATA[publish]]></wp:status>
+    <wp:post_parent>0</wp:post_parent>
+    <wp:menu_order>0</wp:menu_order>
+    <wp:post_type><![CDATA[post]]></wp:post_type>
+    <wp:post_password><![CDATA[]]></wp:post_password>
+    <wp:is_sticky>0</wp:is_sticky>
+    <category domain="category" nicename="tech"><![CDATA[tech]]></category>
+    <category domain="post_tag" nicename="ai"><![CDATA[AI]]></category>
+    <category domain="post_tag" nicename="agent"><![CDATA[エージェント]]></category>
+    <category domain="post_tag" nicename="llm"><![CDATA[LLM]]></category>
+  </item>
+</channel>
+</rss>
