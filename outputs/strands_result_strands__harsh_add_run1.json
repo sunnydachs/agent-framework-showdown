@@ -1,0 +1,8 @@
+{
+ "framework": "strands",
+ "run_label": "strands__harsh_add_run1",
+ "scenario": "base",
+ "tool_variant": "harsh",
+ "elapsed_s": 3.83,
+ "result": "The digest is 90 words, which falls perfectly within the 80–120 word range. Here's the final version:\n\n**Today's Tech News Digest: AI Agents**\n\nThe AI agent landscape is maturing rapidly. Open-source agent frameworks have hit a major production milestone, with adoption tripling as enterprises embrace these tools. Meanwhile, model-driven agents are quietly replacing hand-coded orchestration in startups, signaling a shift toward more autonomous systems. Tool-calling reliability has emerged as the new benchmark for frontier models, while multi-agent swarms are transitioning from demonstrations to regulated enterprise workflows. Finally, observability standards are taking shape, providing frameworks for tracing agent decisions end to end — a crucial step toward accountability and trust in autonomous AI systems.\n"
+}

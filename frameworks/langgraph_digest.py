@@ -25,6 +25,13 @@ from langgraph.graph import END, StateGraph  # noqa: E402
 TOOL_VARIANT = os.environ.get("TOOL_VARIANT", "base")
 if TOOL_VARIANT == "drift":
     from tools_drift import fetch_headlines, word_count  # noqa: E402
+elif TOOL_VARIANT == "harsh":
+    # same level of "no call-site update" as drift: verify_word_count still
+    # calls word_count(state["draft"]). rename survives (positional arg);
+    # type/remove/add raise TypeError inside the verify node -> the process
+    # dies loudly instead of silently mis-verifying. That contrast
+    # (code-invoked = hard crash, no in-run recovery) is part of the finding.
+    from tools_harsh import fetch_headlines, word_count  # noqa: E402
 else:
     from tools import fetch_headlines, word_count  # noqa: E402
 

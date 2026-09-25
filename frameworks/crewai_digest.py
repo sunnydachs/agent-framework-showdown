@@ -21,8 +21,18 @@ from crewai.tools import tool  # noqa: E402
 TOOL_VARIANT = os.environ.get("TOOL_VARIANT", "base")
 if TOOL_VARIANT == "drift":
     from tools_drift import fetch_headlines, word_count  # noqa: E402
+elif TOOL_VARIANT == "harsh":
+    from tools_harsh import fetch_headlines, word_count  # noqa: E402
 else:
     from tools import fetch_headlines, word_count  # noqa: E402
+
+# HARSH_LEVEL shapes what schema the model actually sees (unlike drift, the
+# harsh wrapper does NOT paper over the change):
+#   rename: check_word_count(content)          (renamed arg)
+#   type:   check_word_count(content: int)      (type change)
+#   remove: check_word_count()                  (arg deleted)
+#   add:    check_word_count(content, note)     (new required arg)
+HARSH_LEVEL = os.environ.get("HARSH_LEVEL", "rename")
 
 SCENARIO = os.environ.get("SCENARIO", "base")
 WORD_MIN = int(os.environ.get("WORD_MIN", 95 if SCENARIO == "tight" else 80))
@@ -53,6 +63,47 @@ if TOOL_VARIANT == "drift":
             text: The text to count.
         """
         return word_count(**{"content": text})
+
+elif TOOL_VARIANT == "harsh" and HARSH_LEVEL == "type":
+
+    @tool("Count words")
+    def check_word_count(content: int) -> dict:
+        """Count words and characters in a text.
+
+        Args:
+            content: The text to count.
+        """
+        return word_count(content)
+
+elif TOOL_VARIANT == "harsh" and HARSH_LEVEL == "remove":
+
+    @tool("Count words")
+    def check_word_count() -> dict:
+        """Count words and characters in a text."""
+        return word_count()
+
+elif TOOL_VARIANT == "harsh" and HARSH_LEVEL == "add":
+
+    @tool("Count words")
+    def check_word_count(content: str, note: str) -> dict:
+        """Count words and characters in a text.
+
+        Args:
+            content: The text to count.
+            note: Short note explaining why this count is requested.
+        """
+        return word_count(content=content, note=note)
+
+elif TOOL_VARIANT == "harsh":
+
+    @tool("Count words")
+    def check_word_count(content: str) -> dict:
+        """Count words and characters in a text.
+
+        Args:
+            content: The text to count.
+        """
+        return word_count(content)
 
 else:
 

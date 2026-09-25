@@ -1,0 +1,8 @@
+{
+ "framework": "strands",
+ "run_label": "strands__harsh_type_run1",
+ "scenario": "base",
+ "tool_variant": "harsh",
+ "elapsed_s": 4.87,
+ "result": "The word count is now within range. Here is the final digest:\n\nToday's AI landscape is shifting from experimentation to real-world deployment. Open-source agent frameworks have hit a production milestone as adoption triples, while startups increasingly let model-driven agents replace hand-coded orchestration. Tool-calling reliability has become the new benchmark for frontier models, and multi-agent swarms are entering regulated enterprise workflows. To support this growth, observability standards are emerging to trace agent decisions end to end.\n"
+}
