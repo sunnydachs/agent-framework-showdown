@@ -205,6 +205,13 @@ issue-8764の形状(最初のdurable checkpoint前にクラッシュ): テスト
 - 結果はモデル依存。別のモデルではreasoningの量、ツール呼び出し傾向、出力ぶれが変わります。
 - 依存フットプリントとバージョンは変化が速く、ここの数字は初回インストール時点のもの。
 
+## 記事
+
+記事ごとの証跡。記事で使った数字と、その出典ファイル・再計算コマンドをまとめてあります。
+
+- **「AIエージェントが「成功」と言って何もしない」** —
+  [`articles/exit-0-silent-failures/`](articles/exit-0-silent-failures/README.md)（スキーマ変更の過酷度ラダー、実験5H）
+
 ## リポジトリ構成
 
 ```
@@ -214,6 +221,7 @@ proxy/        記録プロキシ + SSE再構築 + 初回レポート
 runs/         マトリクス実行 (base 27ラン + complex 9ラン) と集計
 traces/       記録されたLLM通信 (ランごとに1ファイル) - 一次データ
 outputs/      各フレームワークが書き出すラン別結果JSON
+articles/     記事ごとの証跡（数字 + 出典 + 再計算コマンド）
 artifacts/    git管理外: 解析成果物。runs/*.py で再生成できる
               (analyze_tax, analyze_scaling, correct_findings, analyze_matrix)
 ```
