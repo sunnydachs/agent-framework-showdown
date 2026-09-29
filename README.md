@@ -205,6 +205,13 @@ Same shape across frameworks is what makes the comparison honest — a single pr
 - Results are model-dependent. A different model will change reasoning volume, tool-call tendencies, and output variance.
 - Dependency footprints and versions move fast; numbers here are from the initial install snapshot.
 
+## Articles
+
+Per-article evidence: the numbers an article uses, each with its source file and a recompute command.
+
+- **Exit 0 is not a test result: 3 silent agent failures** —
+  [`articles/exit-0-silent-failures/`](articles/exit-0-silent-failures/README.md) (schema-change harshness ladder, experiment 5H)
+
 ## Repo layout
 
 ```
@@ -214,6 +221,7 @@ proxy/        recorder proxy + SSE reassembly + first-run report
 runs/         matrix drivers (27-run base + 9-run complex) and aggregation
 traces/       recorded LLM traffic (one file per run) - the primary data
 outputs/      per-run result JSON written by each framework
+articles/     per-article evidence (numbers + source file + recompute command)
 artifacts/    NOT tracked: analysis outputs, rebuild with runs/*.py
               (analyze_tax, analyze_scaling, correct_findings, analyze_matrix)
 ```
