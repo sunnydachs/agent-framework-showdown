@@ -1,14 +1,10 @@
 version: 2
 updates:
-  - package-ecosystem: "pip"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-    open-pull-requests-limit: 5
-    labels:
-      - "dependencies"
-      - "python"
-
+  # No `pip` ecosystem: this repository declares no Python dependencies of its
+  # own. The analyzers are stdlib-only, and the framework packages are the
+  # experiment's subjects, installed into per-framework venvs (see the README).
+  # Adding a manifest just to give Dependabot something to read would invent a
+  # dependency set the repo does not have.
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
