@@ -126,6 +126,17 @@ def analyze_run(rec):
             if p.get("finish_reason") == "stop":
                 run["notes"].append("final_stop_content")
 
+    # A trace that carries no answer and shows a call that ran to the completion
+    # ceiling is a runaway generation: the wire says this attempt produced
+    # nothing. The framework's own output file is deliberately NOT used as a
+    # fallback here — it can hold an answer written by an EARLIER attempt whose
+    # trace this one overwrote, and scoring from an artifact of unknown
+    # provenance is exactly the mistake this experiment is about.
+    if any(parsed(r).get("finish_reason") == "length" for r in recs) and not answer_text and run["n_tool_calls"] == 0:
+        run["outcome"] = "process_error"
+        run["notes"].append("trace_runaway_no_answer")
+        return run
+
     # outputs/<fw>_result_<label>.json is the framework's own final answer record
     out_file = ROOT / "outputs" / f"{fw}_result_{label}.json"
     if out_file.exists():

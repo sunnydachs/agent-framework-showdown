@@ -18,10 +18,12 @@ framework and the endpoint, so all frames in the matrix are diffed from the same
 - mode `stats` — the tool precomputes `count` / `min` / `max`; the model reports them back
 - sizes 11 / 110 / 330 ids, phrasings such as `id >= 9`, `id > 9`, `no less than 9`, `greater than 5 and less than 9`
 
-408 runs (21 per cell at sizes 11 and 110, 26 at 330 where five extra probes are added). 407 exited 0. The one that
-did not is not a timeout to be waved away: on `langgraph` in `ids` at size 330 with the wording `greater than 5 and
-less than 9`, the model produced **131,072 completion tokens in a single call — the completion ceiling — with zero tool
-calls**, `finish_reason: length`, and no answer at all. It is reported as incomplete, never folded into count%.
+408 runs (21 per cell at sizes 11 and 110, 26 at 330 where five extra probes are added). 407 exited 0. Two runs
+produced no answer at all, both `langgraph` in `ids` at size 330 on the phrasing `id >= 9`: the model generated
+**131,072 completion tokens in a single call — the completion ceiling — with zero tool calls**, `finish_reason: length`,
+and no content. One of the two had an earlier attempt that exited 0 in 84.7s; the trace on disk belongs to the runaway
+attempt, and the analyzer reports that run as incomplete rather than scoring it from the framework's own output file,
+whose provenance cannot be checked. Both are listed as incomplete and never folded into count%.
 
 ## Result at 330 rows
 
@@ -31,8 +33,8 @@ calls**, `finish_reason: length`, and no answer at all. It is reported as incomp
 | langgraph | 92.3% (24/26, 2 incomplete) | 100% (26/26) | 8,574 | 143 |
 | strands | 92.3% (24/26) | 100% (26/26) | 11,528 | 1,418 |
 
-Token figures are the mean over the runs that produced a trace (the incomplete runs recorded no tokens at all and
-would otherwise dilute the mean).
+Token figures are the mean over the runs that produced a scored answer. The two incomplete runs are excluded: one
+recorded 132,679 tokens for a single runaway call and would otherwise triple `langgraph`'s per-question cost.
 
 At 11 and 110 rows every framework is at 100% in both modes, with one exception: crewai in `stats` at 110 rows
 answered 106 where the true count was 107.
@@ -67,7 +69,7 @@ table and the recompute commands.
 
 - One model across all runs. The count% figures are a matrix over framework x mode, not a model ranking.
 - 21-26 runs per cell.
-- The single incomplete run is a runaway generation, not a scored failure: it is listed separately and never folded
-  into count%. Its cost (131,072 completion tokens in one call) is likewise excluded from the per-question token means.
+- The two incomplete runs are runaway generations, not scored failures: they are listed separately and never folded
+  into count%. Their cost (132,679 tokens for one call) is likewise excluded from the per-question token means.
 - The recorder forwards to a single shared endpoint, so a rate-limited response can appear on any framework; runs
   that hit it are recorded as such and are excluded from the scored percentages.

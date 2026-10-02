@@ -95,28 +95,41 @@ model answered.
 
 | label | why |
 | --- | --- |
-| `langgraph__counting_ids_s330_p5_r2q55` | one recorded call with `finish_reason: "length"`, `completion_tokens: 131072` (the ceiling), `tool_calls: 0`, no content — a runaway generation, not a slow call. Four attempts, none produced an answer. |
+| `langgraph__counting_ids_s330_p5_r2q55` | never exited 0. One recorded call with `finish_reason: "length"`, `completion_tokens: 131072` (the ceiling), `tool_calls: 0`, no content. Four attempts, none produced an answer. |
+| `langgraph__counting_ids_s330_p0_r103q39` | three attempts, the last two exited 0 (114.4s, 84.7s). The trace on disk is from a **later runaway attempt** (`finish_reason: "length"`, 131,072 completion tokens, zero tool calls) that never wrote a manifest record. |
 
-`outcome == "no_trace"` / `"process_error"`. Read it back:
+`outcome == "no_trace"` / `"process_error"`, and both carry the note `trace_runaway_no_answer`.
+
+### The rule for a trace that disagrees with the exit status
+
+`outputs/<fw>_result_<label>.json` is normally the fallback when the trace carries no model text, because the framework
+writes its own final answer there. It is **not** used when the trace shows a runaway generation: the output file can
+hold an answer written by an earlier attempt whose trace the runaway overwrote, and scoring from an artifact of
+unverifiable provenance is the mistake this whole experiment series is about. Such a run is reported as incomplete.
+
+Read both runaway traces back:
 
 ```bash
 python3 - <<'PY'
 import json
-p = "traces/llm_calls_langgraph__langgraph__counting_ids_s330_p5_r2q55.jsonl"
-for line in open(p):
-    r = json.loads(line)
-    ch = (r["response"]["choices"] or [{}])[0]
-    msg = ch.get("message") or {}
-    u = r["response"].get("usage") or {}
-    print(r["status"], "finish:", ch.get("finish_reason"), "completion_tokens:", u.get("completion_tokens"),
-          "tool_calls:", len(msg.get("tool_calls") or []), "content:", msg.get("content"))
+for lab in ("langgraph__counting_ids_s330_p5_r2q55", "langgraph__counting_ids_s330_p0_r103q39"):
+    p = f"traces/llm_calls_langgraph__langgraph__counting_ids_s330_{lab.split('_s330_')[1]}.jsonl"
+    for line in open(p):
+        r = json.loads(line)
+        ch = (r["response"]["choices"] or [{}])[0]
+        msg = ch.get("message") or {}
+        u = r["response"].get("usage") or {}
+        print(lab, r["status"], "finish:", ch.get("finish_reason"),
+              "completion_tokens:", u.get("completion_tokens"),
+              "tool_calls:", len(msg.get("tool_calls") or []), "content:", msg.get("content"))
 PY
 ```
 
-Expected: `200 finish: length completion_tokens: 131072 tool_calls: 0 content: None`.
+Expected: `200 finish: length completion_tokens: 131072 tool_calls: 0 content: None` for both.
 
-That 132,679-token single request is excluded from every per-question token mean in the report
-(`tokens_mean_scored` averages only the runs that produced an answer).
+Those two 132,679-token single requests are excluded from every per-question token mean in the report
+(`tokens_mean_scored` averages only the runs that produced a scored answer; the plain `tokens_mean` over all n is
+still in the report, and at `langgraph/ids/s330` it reads 23,224 against 8,574 scored).
 
 ## Manifest de-duplication rule
 
