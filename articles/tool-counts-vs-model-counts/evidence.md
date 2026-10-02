@@ -139,3 +139,23 @@ that had already succeeded. The analyzer takes, per label, the **last record tha
 `rescued: <n> label(s) kept their last successful run over a later timeout`.
 
 278 superseded records were dropped; 408 unique labels remain.
+
+## Schedule labels
+
+`runs/run_llm_counting.py` builds the 68 questions of a cell (63 from
+size x phrasing x seed plus five extra size-330 probes). The five extra probes in the committed manifest are recorded
+under `qidx` 36-40 (seeds 100-104, phrasing `id >= 9`) while the current builder numbers them 64-68, so a reader
+re-running the runner will see five different label suffixes in the size-330 cells. The labels do not affect any
+figure: the analyzer walks `runs/manifest_llm_counting.jsonl` and re-derives every count from the trace named by each
+label, so 26 runs per size-330 cell is what the evidence supports either way. To audit it:
+
+```bash
+python3 - <<'PY'
+import json
+recs = [json.loads(l) for l in open("runs/manifest_llm_counting.jsonl") if l.strip()]
+labels = {r["label"] for r in recs}
+print("unique labels:", len(labels))
+print("extra probes present:", sorted(l for l in labels if "_s330_p0_r10" in l))
+PY
+```
+
