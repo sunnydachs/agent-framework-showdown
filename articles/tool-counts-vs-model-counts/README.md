@@ -52,8 +52,8 @@ that run's tool response, not against the analyzer's own number.
 | crewai `ids` s330 `id >= 9` | 323 | 322 | 323 | 0 |
 | crewai `stats` s110 `id > 9` | 107 | 106 | 107 | 0 |
 
-Two of those runs answered **without calling the tool at all** (`tool calls = 0`), including the one in `stats` mode
-where the correct number was sitting in the tool result the model never fetched.
+Three of those runs answered **without calling the tool at all** (`tool calls = 0`), including the one in `stats`
+mode where the correct number was sitting in the tool result the model never fetched.
 
 ## Reproduce
 
