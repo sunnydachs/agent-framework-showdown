@@ -1,0 +1,7 @@
+{
+ "framework": "crewai",
+ "run_label": "crewai__counting_stats_s110_p2_r3q38",
+ "count_mode": "stats",
+ "question": "How many ids are there with a value no less than 9?",
+ "result": "count=107"
+}

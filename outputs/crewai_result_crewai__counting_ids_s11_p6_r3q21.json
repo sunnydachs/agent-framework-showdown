@@ -1,0 +1,7 @@
+{
+ "framework": "crewai",
+ "run_label": "crewai__counting_ids_s11_p6_r3q21",
+ "count_mode": "ids",
+ "question": "How many ids are there that are strictly above 4?",
+ "result": "count=11"
+}

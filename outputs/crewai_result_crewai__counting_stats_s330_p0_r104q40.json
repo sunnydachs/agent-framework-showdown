@@ -1,0 +1,7 @@
+{
+ "framework": "crewai",
+ "run_label": "crewai__counting_stats_s330_p0_r104q40",
+ "count_mode": "stats",
+ "question": "How many ids are there with id >= 9?",
+ "result": "count=322"
+}

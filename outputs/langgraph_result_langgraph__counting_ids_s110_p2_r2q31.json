@@ -1,0 +1,8 @@
+{
+ "framework": "langgraph",
+ "run_label": "langgraph__counting_ids_s110_p2_r2q31",
+ "count_mode": "ids",
+ "question": "How many ids are there with a value no less than 9?",
+ "answer": "count=109",
+ "true_count": 109
+}

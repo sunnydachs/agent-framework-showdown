@@ -1,0 +1,8 @@
+{
+ "framework": "strands",
+ "run_label": "strands__counting_stats_s330_p4_r1q47",
+ "count_mode": "stats",
+ "question": "How many ids are there with a value between 5 and 9 inclusive?",
+ "elapsed_s": 143.26,
+ "result": "count=5\n"
+}

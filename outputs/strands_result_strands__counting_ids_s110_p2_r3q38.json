@@ -1,0 +1,8 @@
+{
+ "framework": "strands",
+ "run_label": "strands__counting_ids_s110_p2_r3q38",
+ "count_mode": "ids",
+ "question": "How many ids are there with a value no less than 9?",
+ "elapsed_s": 21.62,
+ "result": "count=107\n"
+}

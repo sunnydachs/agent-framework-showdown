@@ -1,0 +1,8 @@
+{
+ "framework": "langgraph",
+ "run_label": "langgraph__counting_ids_s110_p5_r3q41",
+ "count_mode": "ids",
+ "question": "How many ids are there that are greater than 5 and less than 9?",
+ "answer": "count=2",
+ "true_count": 2
+}

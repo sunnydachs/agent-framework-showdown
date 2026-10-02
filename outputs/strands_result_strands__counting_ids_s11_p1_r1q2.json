@@ -1,0 +1,8 @@
+{
+ "framework": "strands",
+ "run_label": "strands__counting_ids_s11_p1_r1q2",
+ "count_mode": "ids",
+ "question": "How many ids are there with id > 9?",
+ "elapsed_s": 3.14,
+ "result": "count=8\n"
+}

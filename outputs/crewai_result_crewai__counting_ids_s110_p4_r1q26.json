@@ -1,0 +1,7 @@
+{
+ "framework": "crewai",
+ "run_label": "crewai__counting_ids_s110_p4_r1q26",
+ "count_mode": "ids",
+ "question": "How many ids are there with a value between 5 and 9 inclusive?",
+ "result": "count=2"
+}

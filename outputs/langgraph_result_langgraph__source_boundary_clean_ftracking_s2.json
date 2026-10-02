@@ -1,0 +1,15 @@
+{
+ "framework": "langgraph",
+ "run_label": "langgraph__source_boundary_clean_ftracking_s2",
+ "scenario": "source_boundary",
+ "condition": "clean",
+ "family": "tracking",
+ "seed": "2",
+ "elapsed_s": 0.51,
+ "answer": "Hi there! Your order **ORD-4802** (USB‑C dock) is currently **out for delivery** with an estimated arrival this **Friday**. You can track it here: https://tracks.example.com/t/ORD4802. Let me know if you need anything else!",
+ "result": "Hi there! Your order **ORD-4802** (USB‑C dock) is currently **out for delivery** with an estimated arrival this **Friday**. You can track it here: https://tracks.example.com/t/ORD4802. Let me know if you need anything else!",
+ "args": {
+  "order_id": "ORD-4802"
+ },
+ "tool_invoked_in_code": true
+}

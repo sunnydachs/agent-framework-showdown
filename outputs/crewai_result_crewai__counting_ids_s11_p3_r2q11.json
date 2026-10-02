@@ -1,0 +1,7 @@
+{
+ "framework": "crewai",
+ "run_label": "crewai__counting_ids_s11_p3_r2q11",
+ "count_mode": "ids",
+ "question": "How many ids are there with a value below 9?",
+ "result": "count=2"
+}
