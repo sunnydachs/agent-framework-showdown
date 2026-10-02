@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [ "3.11", "3.12", "3.13" ]
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Use Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      # Both analyzers are stdlib-only and recompute every published number from
+      # the committed traces. Each asserts its own table before writing the
+      # report (rows must add up; the provenance buckets must partition n), so a
+      # green run means the ledgers in articles/ still match the evidence.
+      - name: Recompute the counting matrix
+        run: python3 runs/analyze_llm_counting.py
+
+      - name: Recompute the provenance boundary
+        run: python3 runs/analyze_source_boundary.py
+
+      - name: Recompute the schema-harshness ladder
+        run: python3 runs/analyze_harsh.py
+
+      - name: Check the ledgers quote numbers that exist
+        run: python3 scripts/check_ledgers.py
