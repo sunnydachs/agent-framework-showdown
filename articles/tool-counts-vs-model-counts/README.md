@@ -18,9 +18,10 @@ framework and the endpoint, so all frames in the matrix are diffed from the same
 - mode `stats` — the tool precomputes `count` / `min` / `max`; the model reports them back
 - sizes 11 / 110 / 330 ids, phrasings such as `id >= 9`, `id > 9`, `no less than 9`, `greater than 5 and less than 9`
 
-408 runs (21 per cell at sizes 11 and 110, 26 at 330 where five extra probes are added). 407 exited 0; one
-(langgraph, `ids`, size 330, wording `greater than 5 and less than 9`) never produced a trace and is reported as
-incomplete rather than as a wrong answer.
+408 runs (21 per cell at sizes 11 and 110, 26 at 330 where five extra probes are added). 407 exited 0. The one that
+did not is not a timeout to be waved away: on `langgraph` in `ids` at size 330 with the wording `greater than 5 and
+less than 9`, the model produced **131,072 completion tokens in a single call — the completion ceiling — with zero tool
+calls**, `finish_reason: length`, and no answer at all. It is reported as incomplete, never folded into count%.
 
 ## Result at 330 rows
 
@@ -66,7 +67,7 @@ table and the recompute commands.
 
 - One model across all runs. The count% figures are a matrix over framework x mode, not a model ranking.
 - 21-26 runs per cell.
-- The single incomplete run is an infrastructure timeout on the free tier, not a scored failure; it is listed
-  separately and never folded into count%.
+- The single incomplete run is a runaway generation, not a scored failure: it is listed separately and never folded
+  into count%. Its cost (131,072 completion tokens in one call) is likewise excluded from the per-question token means.
 - The recorder forwards to a single shared endpoint, so a rate-limited response can appear on any framework; runs
   that hit it are recorded as such and are excluded from the scored percentages.

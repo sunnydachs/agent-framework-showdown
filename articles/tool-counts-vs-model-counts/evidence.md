@@ -95,9 +95,28 @@ model answered.
 
 | label | why |
 | --- | --- |
-| `langgraph__counting_ids_s330_p5_r2q55` | never exited 0 (240s cap on the free tier, three attempts); no trace file |
+| `langgraph__counting_ids_s330_p5_r2q55` | one recorded call with `finish_reason: "length"`, `completion_tokens: 131072` (the ceiling), `tool_calls: 0`, no content — a runaway generation, not a slow call. Four attempts, none produced an answer. |
 
-`outcome == "no_trace"` / `"process_error"`.
+`outcome == "no_trace"` / `"process_error"`. Read it back:
+
+```bash
+python3 - <<'PY'
+import json
+p = "traces/llm_calls_langgraph__langgraph__counting_ids_s330_p5_r2q55.jsonl"
+for line in open(p):
+    r = json.loads(line)
+    ch = (r["response"]["choices"] or [{}])[0]
+    msg = ch.get("message") or {}
+    u = r["response"].get("usage") or {}
+    print(r["status"], "finish:", ch.get("finish_reason"), "completion_tokens:", u.get("completion_tokens"),
+          "tool_calls:", len(msg.get("tool_calls") or []), "content:", msg.get("content"))
+PY
+```
+
+Expected: `200 finish: length completion_tokens: 131072 tool_calls: 0 content: None`.
+
+That 132,679-token single request is excluded from every per-question token mean in the report
+(`tokens_mean_scored` averages only the runs that produced an answer).
 
 ## Manifest de-duplication rule
 
