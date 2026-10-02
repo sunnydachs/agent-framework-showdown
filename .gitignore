@@ -12,3 +12,4 @@ artifacts/
 # non-experiment traces (initial trials / smoke tests)
 traces/run1/
 traces/smoke/
+traces/*smoke*

@@ -61,7 +61,7 @@ where the correct number was sitting in the tool result the model never fetched.
 python3 runs/analyze_llm_counting.py    # -> artifacts/llm_counting_report.json
 ```
 
-The analyzer reads `runs/manifest_llm_counting.jsonl` and the 383 traces, recomputes the true count from the id list
+The analyzer reads `runs/manifest_llm_counting.jsonl` and the 408 traces, recomputes the true count from the id list
 in each recorded tool response, and prints the matrix above. `evidence.md` in this directory carries the per-cell
 table and the recompute commands.
 
