@@ -334,6 +334,13 @@ def main():
     (ROOT / "artifacts" / "source_boundary_report.json").write_text(
         json.dumps(out, ensure_ascii=False, indent=1)
     )
+    # the two flags overlap (a run can leak one value and keep the other), so the
+    # four buckets have to partition n exactly or a rate is quoting a bucket
+    # nobody sees
+    for key, a in aggregates.items():
+        assert a["leaked"] + a["retained"] - a["leaked_and_retained"] + a["neither"] == a["n"], (
+            f"buckets do not partition n: {key} {a}"
+        )
     print("saved -> artifacts/source_boundary_report.json")
 
     # console summary
