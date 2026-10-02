@@ -208,6 +208,9 @@ def main():
             "llm_calls_mean": round(sum(r["n_llm_calls"] for r in rs) / n, 2) if n else None,
             "tool_calls_mean": round(sum(r["n_tool_calls"] for r in rs) / n, 2) if n else None,
             "tokens_mean": round(sum(r["tokens"] for r in rs) / n) if n else None,
+            # mean over the runs that actually produced a trace; the mean over n
+            # is diluted by incomplete runs that recorded no tokens at all.
+            "tokens_mean_scored": round(sum(r["tokens"] for r in rs if r["outcome"] in ("correct", "wrong_count")) / len(scored)) if scored else None,
             "completion_tokens_mean": round(sum(r["completion_tokens"] for r in rs) / n) if n else None,
             "elapsed_s_mean": round(sum(r["elapsed_s"] for r in rs) / n, 1) if n else None,
         }
@@ -224,6 +227,9 @@ def main():
     (ROOT / "artifacts" / "llm_counting_report.json").write_text(
         json.dumps(out, ensure_ascii=False, indent=1)
     )
+    # every row must add up, or a percentage is quoting a bucket nobody sees
+    for key, a in aggregates.items():
+        assert a["correct"] + a["wrong_count"] + a["incomplete"] == a["n"], f"row does not add up: {key} {a}"
     print("saved -> artifacts/llm_counting_report.json")
 
     # console score board: per-framework x per-mode x per-size
@@ -243,7 +249,7 @@ def main():
             continue
         print(f"  {fw:10} model-counts={a['count_pct']}% (scored {a['count_pct_of_scored']}%, n={a['n']}, "
               f"incomplete {a['incomplete']})   tool-counts={b['count_pct']}% (scored {b['count_pct_of_scored']}%, n={b['n']})")
-        print(f"  {'':10} tokens/question: model-counts={a['tokens_mean']}  tool-counts={b['tokens_mean']}")
+        print(f"  {'':10} tokens/question (scored runs): model-counts={a['tokens_mean_scored']}  tool-counts={b['tokens_mean_scored']}")
 
 
 if __name__ == "__main__":
