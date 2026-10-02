@@ -65,17 +65,77 @@ def check_wrong_answers(report: dict, readme: str, evidence: str) -> list[str]:
     if seen != len(wrong):
         out.append(f"wrong-answer table has {seen} rows; the report has {len(wrong)} wrong runs")
 
+    # A wrong answer with zero recorded tool calls is the signature of the old
+    # name-substring counter (crewai's `fetch_ids` was invisible to it), so treat
+    # it as an error in the measurement rather than a behaviour to describe.
     silent = [r for r in wrong if r["n_tool_calls"] == 0]
-    m = re.search(r"\b(one|two|three|four|five|\d+)\b of those runs answered[^.]*without calling the tool",
-                  readme, re.I)
-    if not m:
-        out.append("the README no longer states how many wrong answers never called the tool")
-    else:
-        word = m.group(1).lower()
-        claimed = NUMBER_WORDS.get(word) if not word.isdigit() else int(word)
-        if claimed != len(silent):
-            out.append(f"the README says {word} wrong answers never called the tool; "
-                       f"the report has {len(silent)}")
+    if silent:
+        out.append(f"{len(silent)} wrong run(s) recorded 0 tool calls "
+                   f"({', '.join(r['label'] for r in silent[:3])}) — fix the tool-name matching "
+                   f"before quoting that as behaviour")
+    return out
+
+
+def check_contexts(report: dict, readme: str) -> list[str]:
+    """The 'what the model actually saw' table. A mode label is not evidence that
+    the framework carried the tool's answer through, so the ledger states the
+    measured buckets and this re-derives them."""
+    out: list[str] = []
+    per: dict[tuple[str, str], dict[str, int]] = {}
+    for key, a in report["aggregates"].items():
+        fw, mode, _ = key.split("/")
+        acc = per.setdefault((fw, mode), dict.fromkeys(
+            ("count", "ids", "count_and_list", "neither", "no_final_prompt"), 0))
+        for bucket, v in a["contexts"].items():
+            acc[bucket] = acc.get(bucket, 0) + v
+    for (fw, mode), c in sorted(per.items()):
+        if c["count_and_list"]:
+            out.append(f"{fw} `{mode}`: {c['count_and_list']} run(s) held both the count and the list; "
+                       f"the ledger table cannot express that — split the row")
+            continue
+        n = sum(c.values())
+        pat = re.compile(rf"^\|\s*{fw}\s*`{mode}`\s*\|\s*(\d+)\s*\|"          # n
+                         r"\s*\**\s*(\d+)\s*\**\s*\|\s*\**\s*(\d+)\s*\**\s*\|"  # count, ids
+                         r"\s*(\d+)\s*\|\s*(\d+)\s*\|", re.M)                    # neither, no_prompt
+        m = pat.search(readme)
+        if not m:
+            out.append(f"no contexts row for {fw} `{mode}` in the ledger")
+            continue
+        got = tuple(int(x) for x in m.groups())
+        want = (n, c["count"], c["ids"], c["neither"], c["no_final_prompt"])
+        if got != want:
+            out.append(f"contexts row {fw} `{mode}`: ledger says {got}, the report says {want}")
+    return out
+
+
+def check_wrong_answer_summary(report: dict, readme: str) -> list[str]:
+    """The README's five-row table carries no labels, so match the multiset of
+    (answered, true, tool calls) against the report's wrong runs instead. Rows are
+    collected under that table's own header — the ledger has other six-column
+    tables (the contexts matrix) that would otherwise be read as wrong answers."""
+    out: list[str] = []
+    want = sorted((r["answer"], r["true_count"], r["n_tool_calls"])
+                  for r in report["runs"] if r.get("outcome") == "wrong_count")
+    got: list[tuple[int, int, int]] = []
+    collecting = False
+    for line in readme.splitlines():
+        s = line.strip()
+        if not s.startswith("|"):
+            collecting = False
+            continue
+        cells = [c.strip() for c in s.strip("|").split("|")]
+        if set(s) <= set("|-: "):
+            continue
+        joined = " ".join(cells).lower()
+        if not collecting:
+            collecting = "asked" in joined and "answered" in joined and "true" in joined
+            continue
+        try:
+            got.append((int(cells[2]), int(cells[3]), int(cells[4])))
+        except (ValueError, IndexError):
+            continue
+    if sorted(got) != want:
+        out.append(f"wrong-answer summary table: rows say {sorted(got)}, the report says {want}")
     return out
 
 
@@ -84,24 +144,61 @@ def main() -> int:
 
     counting = json.loads((ART / "llm_counting_report.json").read_text())
     aggregates = counting["aggregates"]
-    # thousands separators are a formatting choice in the prose, not a different
-    # number, so the comparison normalises them away
-    ledger = COUNTING_LEDGER.read_text().replace(",", "")
     name = COUNTING_LEDGER.name
 
-    # the six size-330 cells, as the ledger's result table states them
+    # the six size-330 cells, bound to the ledger's own result-table ROW. A flat
+    # substring test over the whole file would accept one stray "92.3%" anywhere
+    # for every cell, and "14" for the 14,600 token row.
+    rows = {c[0].strip().lower(): c for c in table_rows(COUNTING_LEDGER.read_text()) if c}
     for framework in ("crewai", "langgraph", "strands"):
-        for cell in ("ids", "stats"):
+        cells = rows.get(framework)
+        if not cells or len(cells) < 5:
+            print(f"FAIL: {name}: no result row for {framework}")
+            failures += 1
+            continue
+        for col, cell in ((1, "ids"), (2, "stats")):
             row = aggregates[f"{framework}/{cell}/s330"]
             pct = 100 * row["correct"] / row["n"]
-            if not any(form in ledger for form in (f"{pct:.1f}%", f"{pct:.0f}%")):
-                print(f"FAIL: {name}: {framework}/{cell}/s330 count% {pct:.1f}% not quoted")
+            frac = f"{row['correct']}/{row['n']}"
+            if not any(form in cells[col] for form in (f"{pct:.1f}%", f"{pct:.0f}%")) or frac not in cells[col]:
+                print(f"FAIL: {name}: {framework}/{cell}/s330 row says {cells[col]!r}; "
+                      f"the report says {pct:.1f}% ({frac})")
                 failures += 1
-            if str(row["tokens_mean_scored"]) not in ledger:
-                print(f"FAIL: {name}: {framework}/{cell}/s330 tokens {row['tokens_mean_scored']} not quoted")
+        for col, cell in ((3, "ids"), (4, "stats")):
+            want = f"{aggregates[f'{framework}/{cell}/s330']['tokens_mean_scored']:,}"
+            if want not in cells[col]:
+                print(f"FAIL: {name}: {framework}/{cell}/s330 tokens row says {cells[col]!r}; "
+                      f"the report says {want}")
                 failures += 1
 
+    # the run-count claims: 408 runs, 407 exiting 0, 21-26 per cell
+    ledger = COUNTING_LEDGER.read_text()
+    if len(counting["runs"]) != 408:
+        print(f"FAIL: {name}: the report holds {len(counting['runs'])} runs, the ledger claims 408")
+        failures += 1
+    ok_runs = sum(1 for r in counting["runs"] if r["process_ok"])
+    if ok_runs != 407 or "407 exited 0" not in ledger:
+        print(f"FAIL: {name}: {ok_runs} runs exited 0; the ledger says '407 exited 0'")
+        failures += 1
+    if sorted({a["n"] for a in aggregates.values()}) != [21, 26]:
+        print(f"FAIL: {name}: cell sizes are {sorted({a['n'] for a in aggregates.values()})}, the ledger says 21-26")
+        failures += 1
+
+    # a report older than the analyzer that produced it is not evidence
+    report_path = ART / "llm_counting_report.json"
+    if report_path.stat().st_mtime < (ROOT / "runs" / "analyze_llm_counting.py").stat().st_mtime:
+        print(f"FAIL: {name}: llm_counting_report.json is older than the analyzer — re-run it")
+        failures += 1
+
     for problem in check_wrong_answers(counting, COUNTING_LEDGER.read_text(), COUNTING_EVIDENCE.read_text()):
+        print(f"FAIL: {name}: {problem}")
+        failures += 1
+
+    for problem in check_contexts(counting, COUNTING_LEDGER.read_text()):
+        print(f"FAIL: {name}: {problem}")
+        failures += 1
+
+    for problem in check_wrong_answer_summary(counting, COUNTING_LEDGER.read_text()):
         print(f"FAIL: {name}: {problem}")
         failures += 1
 
