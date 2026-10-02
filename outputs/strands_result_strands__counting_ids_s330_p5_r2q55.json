@@ -1,0 +1,8 @@
+{
+ "framework": "strands",
+ "run_label": "strands__counting_ids_s330_p5_r2q55",
+ "count_mode": "ids",
+ "question": "How many ids are there that are greater than 5 and less than 9?",
+ "elapsed_s": 72.62,
+ "result": "count=3\n"
+}

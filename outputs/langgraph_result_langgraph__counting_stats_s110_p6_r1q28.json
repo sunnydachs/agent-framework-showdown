@@ -1,0 +1,8 @@
+{
+ "framework": "langgraph",
+ "run_label": "langgraph__counting_stats_s110_p6_r1q28",
+ "count_mode": "stats",
+ "question": "How many ids are there that are strictly above 4?",
+ "answer": "count=109",
+ "true_count": 0
+}

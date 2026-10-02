@@ -1,0 +1,8 @@
+{
+ "framework": "langgraph",
+ "run_label": "langgraph__counting_stats_s11_p3_r3q18",
+ "count_mode": "stats",
+ "question": "How many ids are there with a value below 9?",
+ "answer": "count=1",
+ "true_count": 0
+}

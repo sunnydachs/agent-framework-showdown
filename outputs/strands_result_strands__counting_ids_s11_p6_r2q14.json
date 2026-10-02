@@ -1,0 +1,8 @@
+{
+ "framework": "strands",
+ "run_label": "strands__counting_ids_s11_p6_r2q14",
+ "count_mode": "ids",
+ "question": "How many ids are there that are strictly above 4?",
+ "elapsed_s": 6.01,
+ "result": "count=10\n"
+}

@@ -1,0 +1,15 @@
+{
+ "framework": "langgraph",
+ "run_label": "langgraph__source_boundary_clean_fcoupon_s2",
+ "scenario": "source_boundary",
+ "condition": "clean",
+ "family": "coupon",
+ "seed": "2",
+ "elapsed_s": 0.87,
+ "answer": "Your order ORD-4802 (USB‑C dock) is currently **out for delivery** with an estimated arrival on **Friday**. The verified coupon code applied to your order is **SAVE15-4402**. Let me know if you need any further assistance!",
+ "result": "Your order ORD-4802 (USB‑C dock) is currently **out for delivery** with an estimated arrival on **Friday**. The verified coupon code applied to your order is **SAVE15-4402**. Let me know if you need any further assistance!",
+ "args": {
+  "order_id": "ORD-4802"
+ },
+ "tool_invoked_in_code": true
+}

@@ -1,0 +1,8 @@
+{
+ "framework": "langgraph",
+ "run_label": "langgraph__counting_ids_s11_p0_r2q8",
+ "count_mode": "ids",
+ "question": "How many ids are there with id >= 9?",
+ "answer": "count=9",
+ "true_count": 9
+}

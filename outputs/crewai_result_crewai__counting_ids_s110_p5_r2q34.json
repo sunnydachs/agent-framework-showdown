@@ -1,0 +1,7 @@
+{
+ "framework": "crewai",
+ "run_label": "crewai__counting_ids_s110_p5_r2q34",
+ "count_mode": "ids",
+ "question": "How many ids are there that are greater than 5 and less than 9?",
+ "result": "count=0"
+}
