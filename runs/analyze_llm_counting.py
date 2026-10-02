@@ -32,7 +32,15 @@ from parse_sse import parse_sse  # noqa: E402
 TRACE_DIR = ROOT / "traces"
 MANIFEST = ROOT / "runs" / "manifest_llm_counting.jsonl"
 
-COUNT_NAME_MARKERS = ("get_count_summary", "get_id_list", "count")
+# Tools this experiment registers, under every name the frameworks gave them.
+# common/tools_counting.py defines `fetch_ids` / `count_summary`; strands exposes
+# the same functions as `get_id_list` / `get_count_summary`. Matching a SUBSTRING
+# of the tool name missed crewai completely: it registers `fetch_ids`, so every
+# crewai run was recorded with n_tool_calls == 0 while its trace plainly held a
+# `fetch_ids` call and the tool result in the following request (measured
+# 2026-10-03). Count the call by the tool it actually is.
+COUNT_TOOL_NAMES = ("fetch_ids", "get_id_list", "count_summary", "get_count_summary")
+COUNT_NAME_MARKERS = ("count",)  # fallback: a framework renaming the counting tool
 
 ANSWER_RE = re.compile(r"count\s*[=:]\s*(-?\d+)", re.IGNORECASE)
 NUMBER_RE = re.compile(r"-?\d+")
@@ -89,6 +97,10 @@ def analyze_run(rec):
         "question": rec.get("question"),
         "process_ok": rec["ok"], "elapsed_s": rec["elapsed_s"],
         "n_llm_calls": 0, "n_tool_calls": 0, "tokens": 0, "completion_tokens": 0,
+        # what the LAST model call actually had in front of it: the id list, the
+        # tool's precomputed count, both or neither. Overwritten below when the run
+        # got far enough to have a final prompt at all.
+        "context": "no_final_prompt",
         "answer": None, "answer_source": "none", "count_correct": False,
         "outcome": None, "notes": [],
     }
@@ -118,7 +130,8 @@ def analyze_run(rec):
         run["tokens"] += u.get("total_tokens", 0) or 0
         run["completion_tokens"] += u.get("completion_tokens", 0) or 0
         for tc in p.get("tool_calls") or []:
-            if any(m in (tc.get("name") or "") for m in COUNT_NAME_MARKERS):
+            name = tc.get("name") or ""
+            if name in COUNT_TOOL_NAMES or any(m in name for m in COUNT_NAME_MARKERS):
                 run["n_tool_calls"] += 1
         content = (p.get("content") or "").strip()
         if content:
@@ -151,6 +164,26 @@ def analyze_run(rec):
 
     ans, src = extract_answer(answer_text)
     run["answer"], run["answer_source"] = ans, src
+
+    # Which of the two things the tool can hand back actually reached the model?
+    # The id list is known from (size, seed), so this is a string test against the
+    # real values rather than a guess from prompt length — a mode label is not
+    # evidence that the framework propagated what the tool returned.
+    ids = make_ids(rec["size"], rec["seed"])
+    final_blob = "\n".join(str(m.get("content") or "")
+                           for m in (recs[-1].get("request") or {}).get("messages") or [])
+    needles = (",".join(str(i) for i in ids[:5]), ", ".join(str(i) for i in ids[:5]))
+    has_list = any(nd in final_blob for nd in needles)
+    has_count = re.search(rf"count\"?\s*[=:]\s*\"?{run['true_count']}\b", final_blob) is not None
+    if has_count and has_list:
+        run["context"] = "count_and_list"
+    elif has_count:
+        run["context"] = "count"
+    elif has_list:
+        run["context"] = "ids"
+    else:
+        run["context"] = "neither"
+
     if ans is None:
         run["outcome"] = "no_answer"
     elif ans == run["true_count"]:
@@ -224,6 +257,10 @@ def main():
             "tokens_mean_scored": round(sum(r["tokens"] for r in rs if r["outcome"] in ("correct", "wrong_count")) / len(scored)) if scored else None,
             "completion_tokens_mean": round(sum(r["completion_tokens"] for r in rs) / n) if n else None,
             "elapsed_s_mean": round(sum(r["elapsed_s"] for r in rs) / n, 1) if n else None,
+            # what the model was actually given: a mode label says what the tool
+            # was asked for, not what the framework carried through to the prompt
+            "contexts": {k: sum(1 for r in rs if r["context"] == k)
+                         for k in ("count", "ids", "count_and_list", "neither", "no_final_prompt")},
         }
 
     out = {
@@ -241,6 +278,7 @@ def main():
     # every row must add up, or a percentage is quoting a bucket nobody sees
     for key, a in aggregates.items():
         assert a["correct"] + a["wrong_count"] + a["incomplete"] == a["n"], f"row does not add up: {key} {a}"
+        assert sum(a["contexts"].values()) == a["n"], f"context buckets do not add up: {key} {a['contexts']}"
     print("saved -> artifacts/llm_counting_report.json")
 
     # console score board: per-framework x per-mode x per-size
