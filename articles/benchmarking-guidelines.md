@@ -31,21 +31,31 @@ runners and analyzers are held to, kept here so the next experiment starts from 
    are separate columns: collapsing them would hide a run that repeated both values.
 10. **A confident wrong answer and a hedged wrong answer are different products.** Worth a column wherever the answer
     is a number.
-11. **Uncalled tools are a finding, not an error.** Two runs in A answered correctly-shaped numbers without calling the
-    tool at all; that is recorded as `n_tool_calls = 0`, not discarded as malformed.
-12. **Provider defaults are not measured settings.** If a sampler default was not set explicitly, say so; do not report
+11. **A tool-call counter must recognise every name the frameworks give the tool.** The same function is registered as
+    `fetch_ids` / `count_summary` by one framework and `get_id_list` / `get_count_summary` by another. Matching a
+    *substring* of the tool name recorded zero calls for an entire framework while its traces held the calls — and a
+    draft had already turned that artifact into "the model never called the tool". Match by identity over the full
+    tool set, and treat "a wrong answer with 0 tool calls" as a measurement bug until proven otherwise.
+12. **A mode label is not evidence of what reached the model.** `stats` says the tool was *asked* for a count. Whether
+    the framework carried that count into the prompt is a separate, measured fact (the analyzer classifies each run's
+    final prompt: the real id list, the tool's count, neither). One framework's `stats` runs never saw a count, which
+    is why its cost stayed at list level — and why its two modes are one task sampled twice, not two designs.
+13. **Provider defaults are not measured settings.** If a sampler default was not set explicitly, say so; do not report
     the run as a controlled-temperature run.
 
 ## Reporting
 
-13. **Cost is a result.** Tokens per question and LLM calls per run are printed next to every accuracy figure, because a
+14. **Cost is a result.** Tokens per question and LLM calls per run are printed next to every accuracy figure, because a
     path that is correct at 55x the token cost is a different recommendation.
-14. **Every row must add up.** `correct + wrong + incomplete == n` is asserted programmatically over the aggregate
-    table rather than eyeballed.
-15. **A matrix with no variance in a column is a result.** In B the framework column is flat at leakage 1.0: that
+15. **Every row must add up.** `correct + wrong + incomplete == n` is asserted programmatically over the aggregate
+    table rather than eyeballed, and so are the new `contexts` buckets.
+16. **A matrix with no variance in a column is a result.** In B the framework column is flat at leakage 1.0: that
     absence of framework difference is the finding, and it decides where the fix has to live.
-16. **State the control.** B's `legitimate` condition exists to rule out "the model repeats anything it has seen
+17. **State the control.** B's `legitimate` condition exists to rule out "the model repeats anything it has seen
     twice"; without it the malicious result has an obvious innocent explanation.
+18. **A rate that coincides is not a mechanism that coincides.** In A all three frameworks read 92.3% at 330 rows for
+    two different reasons (two off-by-one answers, or two runs that produced no answer). Report the failure mode next
+    to the rate, or the shared number reads as a shared cause.
 
 ## Failure handling learned the hard way
 
@@ -57,3 +67,12 @@ runners and analyzers are held to, kept here so the next experiment starts from 
   the grid as failures, and the schedule is resumed after the cap resets.
 - **A timeout is not a wrong answer.** Size-330 runs are slow enough to hit a 240s cap; that is recorded as an
   incomplete run, and the count that was already measured successfully is not overwritten by it.
+- **A counter that only knew some tool names invented a behaviour.** CrewAI's `fetch_ids` matched none of the name
+  fragments the analyzer looked for, so 136 runs were recorded as zero tool calls and the ledger reported "answered
+  without calling the tool at all". Fix the counter, re-run, and re-derive every claim that touched it.
+- **A mode name was read as a delivery guarantee.** The `stats` column was described as "the tool counts" until the
+  prompts were classified; in one framework the count never arrived. Measure what the model was given before writing
+  what the tool did.
+- **A gate that checks a substring checks nothing.** The ledger gate tested `"92.3%" in file_text`, so one occurrence
+  anywhere satisfied every cell. Bind each figure to its own table row, and refuse a report older than the analyzer
+  that produced it.

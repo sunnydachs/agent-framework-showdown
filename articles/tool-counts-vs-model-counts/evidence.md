@@ -54,20 +54,75 @@ strands/stats/s330           n= 26 correct= 26 wrong=0 incompl=0 tok_scored=1418
 `tokens_mean` over all n is also in the report and is lower wherever a run recorded no tokens.
 
 Row check: `correct + wrong_count + incomplete == n` for every cell. The analyzer asserts this over the whole table
-before it writes the report, so a table that does not add up cannot be produced.
+before it writes the report, so a table that does not add up cannot be produced. It asserts the same for the
+`contexts` buckets below (they must also sum to `n`).
+
+## What the model actually saw, per cell
+
+`contexts` in the report, computed by the analyzer from each run's last model call: `ids` = the real id list for that
+`(size, seed)` is in the prompt, `count` = the tool's count is, `neither` = neither.
+
+```text
+crewai/ids       count= 0  ids=68  neither=0
+crewai/stats     count= 0  ids=68  neither=0     <- "stats" mode, and the count never arrived
+langgraph/ids    count= 0  ids=66  neither=2     <- the two incomplete runs
+langgraph/stats  count=68  ids= 0  neither=0
+strands/ids      count= 0  ids=68  neither=0
+strands/stats    count=68  ids= 0  neither=0
+```
+
+```bash
+python3 - <<'PY'
+import json
+a = json.load(open("artifacts/llm_counting_report.json"))["aggregates"]
+for k in sorted(a, key=lambda s: (int(s.split("s")[-1]), s)):
+    c = a[k]["contexts"]
+    print(f"{k:26} count={c['count']:>3} ids={c['ids']:>3} neither={c['neither']}")
+PY
+```
+
+The tool-call count is the other half of the same question. It is per run (`n_tool_calls`) and per cell
+(`tool_calls_mean`); `crewai/ids/s330` reads 1.0 and `crewai/stats/s330` 1.69 after the fix described below.
+
+## A counter that missed every crewai tool call
+
+The analyzer matched a tool call by a *substring of the tool's name*. `common/tools_counting.py` defines the two tools
+as `fetch_ids` and `count_summary`; strands registers the same functions as `get_id_list` / `get_count_summary`;
+crewai uses the canonical names. The marker list held `get_id_list` / `get_count_summary` / `count`, so `fetch_ids`
+matched nothing and **every crewai run was recorded with `n_tool_calls: 0`** even though its trace contains the call
+and the tool result in the next request. 136 crewai runs changed when the match became name-exact over the full tool
+set. Reproduce on the wrong-answer rows:
+
+```bash
+python3 - <<'PY'
+import json
+for lab in ("crewai__counting_ids_s330_p1_r3q58", "crewai__counting_stats_s110_p1_r3q37"):
+    p = f"traces/llm_calls_crewai__{lab}.jsonl"
+    for line in open(p):
+        r = json.loads(line)
+        for m in (r["response"]["choices"] or [{}])[0].get("message", {}).get("tool_calls") or []:
+            print(lab, "->", (m.get("function") or {}).get("name"))
+PY
+```
+
+Expected: `fetch_ids` for both, i.e. a call the old counter could not see.
 
 ## The five wrong answers
 
 `outcome == "wrong_count"` in the report. Each row was independently re-counted from the id list in that run's
 recorded tool response:
 
-| label | question | answered | true_count | n_tool_calls |
-| --- | --- | --- | --- | --- |
-| `strands__counting_ids_s330_p0_r2q50` | `id >= 9` | 321 | 322 | 1 |
-| `strands__counting_ids_s330_p2_r2q52` | `no less than 9` | 321 | 322 | 1 |
-| `crewai__counting_ids_s330_p1_r3q58` | `id > 9` | 320 | 321 | 0 |
-| `crewai__counting_ids_s330_p0_r100q36` | `id >= 9` | 322 | 323 | 0 |
-| `crewai__counting_stats_s110_p1_r3q37` | `id > 9` | 106 | 107 | 0 |
+| label | question | answered | true_count | n_tool_calls | context (what the final prompt held) |
+| --- | --- | --- | --- | --- | --- |
+| `strands__counting_ids_s330_p0_r2q50` | `id >= 9` | 321 | 322 | 1 | `ids` |
+| `strands__counting_ids_s330_p2_r2q52` | `no less than 9` | 321 | 322 | 1 | `ids` |
+| `crewai__counting_ids_s330_p1_r3q58` | `id > 9` | 320 | 321 | 1 | `ids` |
+| `crewai__counting_ids_s330_p0_r100q36` | `id >= 9` | 322 | 323 | 1 | `ids` |
+| `crewai__counting_stats_s110_p1_r3q37` | `id > 9` | 106 | 107 | 1 | `ids` |
+
+All five called the tool and all five had the tool's data in the final prompt. The earlier version of this table said
+`n_tool_calls = 0` for the three crewai rows and the README turned that into "answered without calling the tool at
+all" — a counter artifact, corrected below.
 
 Two independent spot checks of the true count, counted straight from the tool response in the trace:
 
