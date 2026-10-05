@@ -26,6 +26,7 @@ ART = ROOT / "artifacts"
 COUNTING_LEDGER = ROOT / "articles" / "tool-counts-vs-model-counts" / "README.md"
 COUNTING_EVIDENCE = ROOT / "articles" / "tool-counts-vs-model-counts" / "evidence.md"
 PROVENANCE_LEDGER = ROOT / "articles" / "detail-provenance-boundary" / "README.md"
+SWAP_LEDGER = ROOT / "articles" / "swap-attack" / "README.md"
 
 NUMBER_WORDS = {"one": 1, "two": 2, "three": 3, "four": 4, "five": 5,
                 "six": 6, "seven": 7, "eight": 8, "nine": 9, "ten": 10}
@@ -190,6 +191,11 @@ def main() -> int:
         print(f"FAIL: {name}: llm_counting_report.json is older than the analyzer — re-run it")
         failures += 1
 
+    swap_report = ART / "swap_attack_report.json"
+    if swap_report.stat().st_mtime < (ROOT / "runs" / "analyze_swap_attack.py").stat().st_mtime:
+        print(f"FAIL: {SWAP_LEDGER.name}: swap_attack_report.json is older than the analyzer — re-run it")
+        failures += 1
+
     for problem in check_wrong_answers(counting, COUNTING_LEDGER.read_text(), COUNTING_EVIDENCE.read_text()):
         print(f"FAIL: {name}: {problem}")
         failures += 1
@@ -220,6 +226,89 @@ def main() -> int:
         marker = f"| {framework} | malicious | **{row['leaked']}/{row['n']}** | **{row['retained']}/{row['n']}** |"
         if marker not in ledger:
             print(f"FAIL: {name}: missing or stale malicious row for {framework}: {marker!r}")
+            failures += 1
+
+    # --- the ledger's control rows, the ceiling totals, and the swap ledger ---
+    ledger_text = PROVENANCE_LEDGER.read_text()
+
+    for key, row in sorted(provenance.items()):
+        fw, cond = key.split("/")
+        if cond != "clean":
+            continue
+        marker = f"| {fw} | clean | {row['leaked']}/{row['n']} | {row['retained']}/{row['n']} |"
+        if marker not in ledger_text:
+            print(f"FAIL: {name}: missing or stale clean row for {fw}: {marker!r}")
+            failures += 1
+
+    legit = {k: v for k, v in provenance.items() if k.endswith("/legitimate")}
+    cells = {(v["n"], v["leaked"], v["retained"]) for v in legit.values()}
+    if len(cells) != 1:
+        print(f"FAIL: {name}: the legitimate cells disagree across frameworks: {sorted(cells)}")
+        failures += 1
+    else:
+        n, leaked, retained = cells.pop()
+        marker = f"| legitimate | all three | {n} each | {leaked}/{n} | {retained}/{n} |"
+        if marker not in ledger_text:
+            print(f"FAIL: {name}: missing or stale legitimate row: {marker!r}")
+            failures += 1
+
+    # the ceiling cell quotes its own totals, and the same table shape
+    ceiling = json.loads((ART / "source_boundary_ceiling_report.json").read_text())["aggregates"]
+    for fw in ("crewai", "langgraph", "strands"):
+        row = ceiling[f"{fw}/malicious"]
+        marker = (f"| malicious | {fw} | {row['n']} | **{row['leaked']}/{row['n']}** | "
+                  f"{row['retained']}/{row['n']} |")
+        if marker not in ledger_text:
+            print(f"FAIL: {name}: missing or stale ceiling row for {fw}: {marker!r}")
+            failures += 1
+    n_all = sum(v["n"] for v in ceiling.values())
+    ok_all = sum(v["process_ok"] for v in ceiling.values())
+    mal_leak = sum(v["leaked"] for k, v in ceiling.items() if k.endswith("/malicious"))
+    mal_n = sum(v["n"] for k, v in ceiling.items() if k.endswith("/malicious"))
+    if f"{n_all} runs, {ok_all} exited 0" not in ledger_text:
+        print(f"FAIL: {name}: the ledger does not state '{n_all} runs, {ok_all} exited 0'")
+        failures += 1
+    if f"{mal_leak} of {mal_n} malicious runs" not in ledger_text:
+        print(f"FAIL: {name}: the ledger does not state '{mal_leak} of {mal_n} malicious runs'")
+        failures += 1
+
+    # swap-attack ledger: every row of the result table, plus the totals sentence
+    swap = json.loads((ART / "swap_attack_report.json").read_text())["runs"]
+    swap_ledger = SWAP_LEDGER.read_text()
+    for cells in table_rows(swap_ledger):
+        if len(cells) != 7:
+            continue
+        fw, cond = cells[0].replace("**", ""), cells[1].replace("**", "")
+        if cond not in ("swap_none", "swap_silent", "swap_reported", "swap_bound"):
+            continue
+        ds = [r for r in swap if r["condition"] == cond and r["framework"] == fw]
+        if not ds:
+            print(f"FAIL: {SWAP_LEDGER.name}: the ledger has a {fw}/{cond} row; the report has no runs")
+            failures += 1
+            continue
+        n = len(ds)
+        want = {3: f"{sum(1 for r in ds if r['mismatch'])}/{n}",
+                5: f"{sum(1 for r in ds if r['delivery_refused'])}/{n}",
+                6: f"{sum(1 for r in ds if r['claims_delivery'])}/{n}"}
+        for idx, value in want.items():
+            if cells[idx].replace("**", "").strip() != value:
+                print(f"FAIL: {SWAP_LEDGER.name}: {fw}/{cond} column {idx} says "
+                      f"{cells[idx]!r}; the report says {value}")
+                failures += 1
+
+    for cond in ("swap_none", "swap_silent", "swap_reported", "swap_bound"):
+        ds = [r for r in swap if r["condition"] == cond]
+        n = len(ds)
+        mm = sum(1 for r in ds if r["mismatch"])
+        rf = sum(1 for r in ds if r["delivery_refused"])
+        cl = sum(1 for r in ds if r["claims_delivery"])
+        if f"`{cond}` {mm}/{n} mismatch" not in swap_ledger:
+            print(f"FAIL: {SWAP_LEDGER.name}: totals do not say '`{cond}` {mm}/{n} mismatch'")
+            failures += 1
+        want = (f"**{rf}/{n} refused in code, {cl}/{n} claimed**" if cond == "swap_bound"
+                else f"{cl}/{n} claimed verified delivery")
+        if want not in swap_ledger:
+            print(f"FAIL: {SWAP_LEDGER.name}: totals do not say {want!r} for {cond}")
             failures += 1
 
     if failures:
