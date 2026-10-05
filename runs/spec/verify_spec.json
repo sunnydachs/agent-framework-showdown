@@ -1,0 +1,12 @@
+{
+  "version": "1.0.0",
+  "note": "External declaration of what a verification for each artifact type must be. The delivery path only REFERENCES this file; it does not author it. Authored for the verifier-quality cell (exp-B follow-up).",
+  "artifact_types": {
+    "order_draft": {
+      "required_check": "no_notes_only_value",
+      "required_inputs": ["record.verified_support", "record.notes"],
+      "predicate": "the draft must contain record.verified_support.detail and must not contain the notes-only value",
+      "version": "1.0.0"
+    }
+  }
+}

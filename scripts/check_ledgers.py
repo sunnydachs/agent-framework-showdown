@@ -27,6 +27,7 @@ COUNTING_LEDGER = ROOT / "articles" / "tool-counts-vs-model-counts" / "README.md
 COUNTING_EVIDENCE = ROOT / "articles" / "tool-counts-vs-model-counts" / "evidence.md"
 PROVENANCE_LEDGER = ROOT / "articles" / "detail-provenance-boundary" / "README.md"
 SWAP_LEDGER = ROOT / "articles" / "swap-attack" / "README.md"
+VQ_LEDGER = ROOT / "articles" / "verify-quality-axis" / "README.md"
 
 NUMBER_WORDS = {"one": 1, "two": 2, "three": 3, "four": 4, "five": 5,
                 "six": 6, "seven": 7, "eight": 8, "nine": 9, "ten": 10}
@@ -137,6 +138,89 @@ def check_wrong_answer_summary(report: dict, readme: str) -> list[str]:
             continue
     if sorted(got) != want:
         out.append(f"wrong-answer summary table: rows say {sorted(got)}, the report says {want}")
+    return out
+
+
+def check_verify_quality(report: dict, ledger: str) -> list[str]:
+    """The verifier-quality ledger: per-framework rows, the cell totals, and the
+    guard breakdown.
+
+    Two tables with different first columns: the per-framework table starts with
+    a framework name, the cell-totals table starts with a cell name. A row whose
+    numbers do not match the report is a failure — that is the whole point, since
+    the figures in this ledger are the article's claims.
+    """
+    out: list[str] = []
+    agg = report["aggregates"]
+    totals = report["cell_totals"]
+    frameworks = ["strands", "langgraph", "crewai"]
+    cells_defined = report["cells_defined"]
+
+    for cells in table_rows(ledger):
+        first = cells[0].replace("**", "").strip()
+        if first in frameworks and len(cells) == 8:
+            cell = cells[1].replace("**", "").strip()
+            if cell not in cells_defined:
+                continue
+            a = agg.get(f"{first}/{cell}")
+            if not a:
+                out.append(f"{first}/{cell}: the ledger has a row; the report has no runs")
+                continue
+            n = a["n"]
+            want = {2: str(n),
+                    3: f"{a['bytes_bound']}/{n}",
+                    4: f"{a['verifier_executed']}/{n}",
+                    5: f"{a['control_ran']}/{n}",
+                    6: f"{a['delivered_wrong']}/{n}",
+                    7: f"{a['claims_verified']}/{n}"}
+            for idx, value in want.items():
+                if cells[idx].replace("**", "").strip() != value:
+                    out.append(f"{first}/{cell}: column {idx} says {cells[idx]!r}; "
+                               f"the report says {value}")
+        elif first in cells_defined and len(cells) == 9:
+            a = totals[first]
+            n = a["n"]
+            want = {1: str(n),
+                    2: f"{a['bytes_bound']}/{n}",
+                    3: f"{a['artifact_violates']}/{n}",
+                    4: f"{a['verifier_executed']}/{n}",
+                    5: f"{a['control_ran']}/{n}",
+                    6: f"{a['delivered_wrong']}/{n}",
+                    8: f"{a['claims_verified']}/{n}"}
+            for idx, value in want.items():
+                if cells[idx].replace("**", "").strip() != value:
+                    out.append(f"{first}: column {idx} says {cells[idx]!r}; "
+                               f"the report says {value}")
+            # guard column: "name x/n" groups, and they must partition the runs
+            groups = re.findall(r"([a-z_]+)\s+(\d+)/(\d+)", cells[7])
+            if not groups:
+                out.append(f"{first}: no parsable guard breakdown in {cells[7]!r}")
+            else:
+                covered = 0
+                for name, got, den in groups:
+                    if int(den) != n:
+                        out.append(f"{first}: guard {name} quoted over {den}, n={n}")
+                    if a["guards"].get(name, 0) != int(got):
+                        out.append(f"{first}: guard {name} says {got}; the report says "
+                                   f"{a['guards'].get(name, 0)}")
+                    covered += int(got)
+                if covered != n:
+                    out.append(f"{first}: guard groups cover {covered} of {n} runs")
+
+    # totals sentence and the bridge claim
+    m = report["manifest"]
+    if f"{m['runs']} runs, {m['exited_zero']} exited 0" not in ledger:
+        out.append(f"the ledger does not state '{m['runs']} runs, {m['exited_zero']} exited 0'")
+    b = report.get("bridge") or {}
+    if b.get("n"):
+        marker = f"**{b['mismatch']}/{b['n']} mismatch, {b['claims']}/{b['n']} claimed**"
+        if marker not in ledger:
+            out.append(f"the bridge line does not quote {marker!r}")
+        same = b.get("same_as_swap_silent")
+        want = ("the platform switch did not move this cell" if same
+                else "the platform switch moved this cell")
+        if want not in ledger:
+            out.append(f"the ledger does not state {want!r} (bridge unchanged={same})")
     return out
 
 
@@ -309,6 +393,28 @@ def main() -> int:
                 else f"{cl}/{n} claimed verified delivery")
         if want not in swap_ledger:
             print(f"FAIL: {SWAP_LEDGER.name}: totals do not say {want!r} for {cond}")
+            failures += 1
+
+    # verifier-quality ledger: per-framework rows, cell totals, guard breakdown.
+    # A missing report or ledger is a failure, not a traceback: the figures in
+    # this ledger are the article's claims, so their absence must be loud.
+    vq_report_path = ART / "verify_quality_report.json"
+    if not VQ_LEDGER.exists():
+        print(f"FAIL: {VQ_LEDGER.name}: ledger is missing")
+        failures += 1
+    elif not vq_report_path.exists():
+        print(f"FAIL: {VQ_LEDGER.name}: artifacts/verify_quality_report.json is missing "
+              f"— run runs/analyze_verify_quality.py")
+        failures += 1
+    else:
+        if (vq_report_path.stat().st_mtime
+                < (ROOT / "runs" / "analyze_verify_quality.py").stat().st_mtime):
+            print(f"FAIL: {VQ_LEDGER.name}: verify_quality_report.json is older than the "
+                  f"analyzer — re-run it")
+            failures += 1
+        for problem in check_verify_quality(json.loads(vq_report_path.read_text()),
+                                            VQ_LEDGER.read_text()):
+            print(f"FAIL: {VQ_LEDGER.name}: {problem}")
             failures += 1
 
     if failures:
