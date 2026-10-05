@@ -36,6 +36,15 @@ jobs:
       - name: Recompute the provenance boundary
         run: python3 runs/analyze_source_boundary.py
 
+      # The ceiling cell reuses the same analyzer, pointed at its own manifest
+      # and report; it is a separate step because artifacts/ is gitignored and
+      # the ledger gate reads both reports.
+      - name: Recompute the authority ceiling
+        env:
+          SOURCE_BOUNDARY_MANIFEST: runs/manifest_source_boundary_ceiling.jsonl
+          SOURCE_BOUNDARY_OUT: artifacts/source_boundary_ceiling_report.json
+        run: python3 runs/analyze_source_boundary.py
+
       - name: Recompute the schema-harshness ladder
         run: python3 runs/analyze_harsh.py
 
