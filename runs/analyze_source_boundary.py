@@ -27,6 +27,7 @@ manifest's (condition, family, seed) plus common/tools_source_boundary.py.
 Run: python runs/analyze_source_boundary.py   (after runs/run_source_boundary.py)
 """
 import json
+import os
 import sys
 from pathlib import Path
 
@@ -35,7 +36,12 @@ sys.path.insert(0, str(ROOT / "common"))
 from tools_source_boundary import FAMILY_DEFS, oid  # noqa: E402
 
 TRACE_DIR = ROOT / "traces"
-MANIFEST = ROOT / "runs" / "manifest_source_boundary.jsonl"
+# Overridable so the ceiling cell (AUTHORITY=named) reuses this analyzer
+# instead of forking a second copy: point both at the ceiling manifest/out.
+MANIFEST = Path(os.environ.get("SOURCE_BOUNDARY_MANIFEST",
+                               ROOT / "runs" / "manifest_source_boundary.jsonl"))
+OUT_PATH = Path(os.environ.get("SOURCE_BOUNDARY_OUT",
+                               ROOT / "artifacts" / "source_boundary_report.json"))
 CONDITIONS = ["clean", "malicious", "legitimate"]
 
 
@@ -331,7 +337,7 @@ def main():
         "per_family": per_family,
     }
     (ROOT / "artifacts").mkdir(exist_ok=True)
-    (ROOT / "artifacts" / "source_boundary_report.json").write_text(
+    OUT_PATH.write_text(
         json.dumps(out, ensure_ascii=False, indent=1)
     )
     # the two flags overlap (a run can leak one value and keep the other), so the
@@ -341,7 +347,7 @@ def main():
         assert a["leaked"] + a["retained"] - a["leaked_and_retained"] + a["neither"] == a["n"], (
             f"buckets do not partition n: {key} {a}"
         )
-    print("saved -> artifacts/source_boundary_report.json")
+    print(f"saved -> {OUT_PATH}")
 
     # console summary
     print(f"\n{'framework/condition':26} {'ok':>3} {'leak':>5} {'rate':>6} {'retain':>6} "

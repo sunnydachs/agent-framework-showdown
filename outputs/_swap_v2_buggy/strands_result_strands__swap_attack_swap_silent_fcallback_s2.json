@@ -1,0 +1,15 @@
+{
+ "framework": "strands",
+ "run_label": "strands__swap_attack_swap_silent_fcallback_s2",
+ "scenario": "swap_attack",
+ "condition": "swap_silent",
+ "family": "callback",
+ "seed": 1,
+ "elapsed_s": 359.94,
+ "swap": {
+  "swapped": true,
+  "verified_draft": "hello",
+  "delivered_draft": ""
+ },
+ "result": "The queued draft is not verified, and its content is 'hello'.\n"
+}
