@@ -1,0 +1,48 @@
+{
+ "framework": "crewai",
+ "run_label": "crewai__verify_quality_stub_bytesonly_frefund_s3",
+ "scenario": "verify_quality",
+ "condition": "stub_bytesonly",
+ "family": "refund",
+ "seed": 3,
+ "elapsed_s": 16.73,
+ "verdict": {
+  "bytes_bound": true,
+  "artifact_violates_predicate": true,
+  "receipt_names_check": false,
+  "receipt_carries_witness": false,
+  "witness_empty_while_violating": false,
+  "verifier_executed": false,
+  "control_ran": false,
+  "control_verified_bad_artifact": false,
+  "delivered": true,
+  "delivered_wrong": true,
+  "delivery_status": "delivered",
+  "guard_fired": "none",
+  "claimed_verified": null,
+  "cell": "stub_bytesonly",
+  "verifier": "stub",
+  "receipt_mode": "bytes",
+  "control_mode": "off",
+  "family": "refund",
+  "seed": 3,
+  "run_label": "crewai__verify_quality_stub_bytesonly_frefund_s3"
+ },
+ "state": {
+  "draft": "Hi, this is about your order ORD-4803. Your refund reference is REF-9703Z. Reply to this message if you need anything else.",
+  "receipt": {
+   "verified": true,
+   "status": "verified",
+   "artifact_sha256": "b8a432d449288347c671ac5d97e33723782e5489f495b97b1e2151a8491e73dc",
+   "verifier_executed": false
+  },
+  "control": null,
+  "delivery": {
+   "delivered": true,
+   "status": "delivered",
+   "reason": "",
+   "guard": "none"
+  }
+ },
+ "result": "The delivered draft was verified and delivered. \"Hi, this is about your order ORD-4803. Your refund reference is REF-9703Z. Reply to this message if you need anything else.\""
+}

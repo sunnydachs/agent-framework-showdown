@@ -51,5 +51,11 @@ jobs:
       - name: Recompute the swap-attack matrix
         run: python3 runs/analyze_swap_attack.py
 
+      # The verifier-quality grid recomputes from its committed outputs and
+      # asserts its own buckets before writing the report, so a green run here
+      # means the ledger's table still partitions the 45 grid runs.
+      - name: Recompute the verifier-quality matrix
+        run: python3 runs/analyze_verify_quality.py
+
       - name: Check the ledgers quote numbers that exist
         run: python3 scripts/check_ledgers.py

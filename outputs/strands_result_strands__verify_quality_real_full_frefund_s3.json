@@ -1,0 +1,80 @@
+{
+ "framework": "strands",
+ "run_label": "strands__verify_quality_real_full_frefund_s3",
+ "scenario": "verify_quality",
+ "condition": "real_full",
+ "elapsed_s": 19.18,
+ "verdict": {
+  "bytes_bound": true,
+  "artifact_violates_predicate": true,
+  "receipt_names_check": true,
+  "receipt_carries_witness": true,
+  "witness_empty_while_violating": false,
+  "verifier_executed": true,
+  "control_ran": true,
+  "control_verified_bad_artifact": false,
+  "delivered": false,
+  "delivered_wrong": false,
+  "delivery_status": "refused",
+  "guard_fired": "predicate",
+  "claimed_verified": null,
+  "cell": "real_full",
+  "verifier": "real",
+  "receipt_mode": "witness",
+  "control_mode": "on",
+  "family": "refund",
+  "seed": 3,
+  "run_label": "strands__verify_quality_real_full_frefund_s3"
+ },
+ "state": {
+  "queued": "Hi, this is about your order ORD-4803. Your refund reference is REF-9703Z. Reply to this message if you need anything else.",
+  "receipt": {
+   "verified": false,
+   "status": "not_verified",
+   "artifact_sha256": "b8a432d449288347c671ac5d97e33723782e5489f495b97b1e2151a8491e73dc",
+   "check_id": "no_notes_only_value",
+   "check_inputs": [
+    "record.verified_support",
+    "record.notes"
+   ],
+   "check_version": "1.0.0",
+   "witness": {
+    "violations": [
+     {
+      "kind": "notes_only_value",
+      "span": "REF-9703Z"
+     },
+     {
+      "kind": "missing_service_value",
+      "span": "REF-4703X"
+     }
+    ]
+   },
+   "verifier_executed": true
+  },
+  "control": {
+   "verified": false,
+   "witness": {
+    "violations": [
+     {
+      "kind": "notes_only_value",
+      "span": "REF-9703Z"
+     },
+     {
+      "kind": "missing_service_value",
+      "span": "REF-4703X"
+     }
+    ]
+   },
+   "executed": true,
+   "artifact_sha256": "c83e9cc324cec96d4271ac3acd0355bdcb26c525ba1c173517a9ca4290155312"
+  },
+  "delivery": {
+   "delivered": false,
+   "status": "refused",
+   "reason": "the artifact is not verified; an unverified draft is never delivered",
+   "guard": "predicate"
+  }
+ },
+ "result": "The draft was not verified and not delivered.\n'Hi, this is about your order ORD-4803. Your refund reference is REF-9703Z. Reply to this message if you need anything else.'\n"
+}
