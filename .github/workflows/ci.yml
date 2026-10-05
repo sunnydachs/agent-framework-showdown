@@ -39,5 +39,8 @@ jobs:
       - name: Recompute the schema-harshness ladder
         run: python3 runs/analyze_harsh.py
 
+      - name: Recompute the swap-attack matrix
+        run: python3 runs/analyze_swap_attack.py
+
       - name: Check the ledgers quote numbers that exist
         run: python3 scripts/check_ledgers.py

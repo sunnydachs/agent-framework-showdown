@@ -13,3 +13,6 @@ artifacts/
 traces/run1/
 traces/smoke/
 traces/*smoke*
+# the recorder's fallback bucket: a run lands here when its label header is
+# missing, so the records are misfiled, not a run's trace (nothing reads it)
+traces/llm_calls_unknown.jsonl
