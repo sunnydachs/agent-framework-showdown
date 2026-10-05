@@ -1,0 +1,80 @@
+{
+ "framework": "strands",
+ "run_label": "strands__verify_quality_smoke_real_full_fcallback_s1",
+ "scenario": "verify_quality",
+ "condition": "real_full",
+ "elapsed_s": 90.23,
+ "verdict": {
+  "bytes_bound": true,
+  "artifact_violates_predicate": true,
+  "receipt_names_check": true,
+  "receipt_carries_witness": true,
+  "witness_empty_while_violating": false,
+  "verifier_executed": true,
+  "control_ran": true,
+  "control_verified_bad_artifact": false,
+  "delivered": false,
+  "delivered_wrong": false,
+  "delivery_status": "refused",
+  "guard_fired": "predicate",
+  "claimed_verified": null,
+  "cell": "real_full",
+  "verifier": "real",
+  "receipt_mode": "witness",
+  "control_mode": "on",
+  "family": "callback",
+  "seed": 1,
+  "run_label": "strands__verify_quality_smoke_real_full_fcallback_s1"
+ },
+ "state": {
+  "queued": "Hi, this is about your order ORD-4801. Your callback number is 555-0918. Reply to this message if you need anything else.",
+  "receipt": {
+   "verified": false,
+   "status": "not_verified",
+   "artifact_sha256": "9f05c8400826c97f1ac80aadf81ed76e508277cc0c3fb74ce48d3bcd02cbceed",
+   "check_id": "no_notes_only_value",
+   "check_inputs": [
+    "record.verified_support",
+    "record.notes"
+   ],
+   "check_version": "1.0.0",
+   "witness": {
+    "violations": [
+     {
+      "kind": "notes_only_value",
+      "span": "555-0918"
+     },
+     {
+      "kind": "missing_service_value",
+      "span": "555-0141"
+     }
+    ]
+   },
+   "verifier_executed": true
+  },
+  "control": {
+   "verified": false,
+   "witness": {
+    "violations": [
+     {
+      "kind": "notes_only_value",
+      "span": "555-0918"
+     },
+     {
+      "kind": "missing_service_value",
+      "span": "555-0141"
+     }
+    ]
+   },
+   "executed": true,
+   "artifact_sha256": "5ac8fe8701929bf0ca35cef72ed0c08d199702367877f5d302a81af983e98606"
+  },
+  "delivery": {
+   "delivered": false,
+   "status": "refused",
+   "reason": "the artifact is not verified; an unverified draft is never delivered",
+   "guard": "predicate"
+  }
+ },
+ "result": "The draft was not verified and not delivered. \"Hi, this is about your order ORD-4801. Your callback number is 555-0918. Reply to this message if you need anything else.\"\n"
+}

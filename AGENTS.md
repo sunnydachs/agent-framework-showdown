@@ -41,5 +41,7 @@ Short rules for anyone — human or agent — adding an experiment to this repos
 python3 runs/analyze_llm_counting.py
 python3 runs/analyze_source_boundary.py
 python3 runs/analyze_harsh.py
+python3 runs/analyze_swap_attack.py
+python3 runs/analyze_verify_quality.py
 python3 scripts/check_ledgers.py
 ```
