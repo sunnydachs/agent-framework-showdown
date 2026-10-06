@@ -1,7 +1,7 @@
 {
  "framework": "crewai",
  "phase": "persist_probe",
- "db_storage_path": "/home/arari/projects/agent-framework-showdown/.local/share/agent-framework-showdown",
+ "db_storage_path": "<repo-root>/.local/share/agent-framework-showdown",
  "db_exists": true,
  "db_files": [
   "latest_kickoff_task_outputs.db"
