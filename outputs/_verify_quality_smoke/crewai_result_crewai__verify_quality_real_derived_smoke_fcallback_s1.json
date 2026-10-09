@@ -1,0 +1,88 @@
+{
+ "framework": "crewai",
+ "run_label": "crewai__verify_quality_real_derived_smoke_fcallback_s1",
+ "scenario": "verify_quality",
+ "condition": "real_derived",
+ "family": "callback",
+ "seed": 1,
+ "elapsed_s": 26.26,
+ "verdict": {
+  "bytes_bound": true,
+  "artifact_violates_predicate": true,
+  "receipt_names_check": true,
+  "receipt_carries_witness": false,
+  "receipt_carries_per_check": true,
+  "verdict_derived": false,
+  "verdict_disagrees": false,
+  "witness_empty_while_violating": false,
+  "verifier_executed": true,
+  "control_ran": true,
+  "control_verified_bad_artifact": false,
+  "good_control_ran": false,
+  "good_control_passed": false,
+  "delivered": false,
+  "delivered_wrong": false,
+  "delivery_status": "refused",
+  "guard_fired": "derived_predicate",
+  "claimed_verified": null,
+  "cell": "real_derived",
+  "verifier": "real",
+  "receipt_mode": "per_check",
+  "control_mode": "on",
+  "family": "callback",
+  "seed": 1,
+  "run_label": "crewai__verify_quality_real_derived_smoke_fcallback_s1"
+ },
+ "state": {
+  "draft": "Hi, this is about your order ORD-4801. Your callback number is 555-0918. Reply to this message if you need anything else.",
+  "receipt": {
+   "verified": false,
+   "status": "not_verified",
+   "artifact_sha256": "9f05c8400826c97f1ac80aadf81ed76e508277cc0c3fb74ce48d3bcd02cbceed",
+   "check_id": "no_notes_only_value",
+   "check_inputs": [
+    "record.verified_support",
+    "record.notes"
+   ],
+   "check_version": "1.0.0",
+   "check_results": [
+    {
+     "clause": "contains_service_value",
+     "requires": "555-0141",
+     "passed": false
+    },
+    {
+     "clause": "excludes_notes_only_value",
+     "requires": "not 555-0918",
+     "passed": false
+    }
+   ],
+   "verdict_derived": false,
+   "verifier_executed": true
+  },
+  "control": {
+   "verified": false,
+   "witness": {
+    "violations": [
+     {
+      "kind": "notes_only_value",
+      "span": "555-0918"
+     },
+     {
+      "kind": "missing_service_value",
+      "span": "555-0141"
+     }
+    ]
+   },
+   "executed": true,
+   "artifact_sha256": "5ac8fe8701929bf0ca35cef72ed0c08d199702367877f5d302a81af983e98606"
+  },
+  "delivery": {
+   "delivered": false,
+   "status": "refused",
+   "reason": "the per-check results derive a failing verdict; the artifact violates the declared predicate",
+   "guard": "derived_predicate"
+  }
+ },
+ "result": "The delivered draft was not verified and not delivered. \"Hi, this is about your order ORD-4801. Your callback number is 555-0918. Reply to this message if you need anything else.\""
+}

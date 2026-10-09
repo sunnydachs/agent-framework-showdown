@@ -69,12 +69,15 @@ Cell totals across the three frameworks:
 | stub_witness | 9 | 9/9 | 9/9 | 0/9 | 0/9 | **9/9** | none 9/9 | **9/9** |
 | stub_control | 9 | 9/9 | 9/9 | 0/9 | 9/9 | 0/9 | negative_control 9/9 | 0/9 |
 | real_full | 9 | 9/9 | 9/9 | 9/9 | 9/9 | 0/9 | predicate 9/9 | 0/9 |
+| stub_percheck | 9 | 9/9 | 9/9 | 0/9 | 9/9 | 0/9 | negative_control 9/9 | 0/9 |
+| real_derived | 9 | 9/9 | 9/9 | 9/9 | 9/9 | 0/9 | derived_predicate 9/9 | 0/9 |
+| real_goodcontrol | 9 | 9/9 | 9/9 | 9/9 | 9/9 | 0/9 | predicate 9/9 | 0/9 |
 
-45 grid runs, 45 exited 0. Including the bridge: 54 runs, 54 exited 0.
+72 grid runs, 72 exited 0. Including the bridge: 81 runs, 81 exited 0.
 
 ## What the figures say
 
-* **The binding held and the artifact was wrong, in all 45 runs.** `bytes bound` is 9/9 in every
+* **The binding held and the artifact was wrong, in all 72 runs.** `bytes bound` is 9/9 in every
   cell, `artifact violated` is 9/9 in every cell. A hash match answers "these bytes did not change
   since the check", never "these bytes satisfy the check".
 * **Naming the check changed nothing.** `stub_named` shipped the wrong artifact 9/9 and claimed a
@@ -92,6 +95,47 @@ Cell totals across the three frameworks:
   anything wrong once the check either ran or could be shown to fail.
 * **The three frameworks agree row for row.** No cell differs across strands, langgraph and crewai,
   including the two cells where the refusal is the correct outcome.
+
+## The three cells the mayailands thread asked for (2026-10-08)
+
+The thread under [the 4gdd article](https://dev.to/sunnydachs/your-agent-says-verified-nothing-binds-it-to-the-artifact-4gdd)
+converged on one design principle: a receipt that is complete while hollow is a claim, so bind
+(a) the artifact identity, (b) a pinned check set, (c) one result per check — and derive the
+verdict from (c) instead of asserting it next to it. Three cells turn that into knobs on the same
+grid (same task, same tools, same seeds — the fix is the single difference):
+
+* `stub_percheck` — the stub under the per-check receipt (`check_results`: one entry per clause
+  with the result the execution produced) plus the control. The stub's asserted `verified=True`
+  now sits beside a `verdict_derived=False` computed from its own clause results: the two halves
+  disagree **in the recorded state**, 9/9 runs. The delivery path refused all 9.
+* `real_derived` — the real verifier under the same receipt. The derived verdict is False (the
+  artifact violates the predicate from its first byte) and the refusal fires on the derived
+  predicate itself 9/9 (guard: `derived_predicate`).
+* `real_goodcontrol` — the real verifier plus a known-GOOD control (a clean draft that must
+  return pass) alongside the known-bad one. The good control passed 9/9, and an always-failing
+  verifier would be caught by the same guard: `good_control_failed` counts runs where the
+  verifier returned fail on the clean draft.
+
+### What the three cells say
+
+* **The per-check receipt makes the stub's self-report visible, in state, not in prose.**
+  `verdict_disagrees` is 9/9 in `stub_percheck`: the asserted verdict and the derived verdict
+  disagree on every run, and the disagreement is a recorded column a gate can check — the same
+  hole the witness cell exposed, now impossible to hide inside the receipt.
+* **The guard that catches the stub is still the control, not the mismatch.** The guard order
+  checks the controls before the derived verdict, so `stub_percheck` records
+  `negative_control 9/9` even though the disagreement was also present 9/9. The control needs no
+  write-protection to work; the per-check receipt makes the disagreement visible without one.
+* **A derived verdict refuses on the artifact itself** (`real_derived`, guard:
+  `derived_predicate`, 9/9) — the refusal is the artifact's violation computed from the clause
+  results, not the stub's claim.
+* **The known-good control closes the opposite end.** `real_goodcontrol` ran the clean draft
+  through the same verifier 9/9 and it passed 9/9 (`good_control_failed` 0/9), while the real
+  check still refuses on the artifact (guard: `predicate` 9/9). A verifier that always fails
+  would record `good_control_failed 9/9` — the probe the thread asked for, and it is now a
+  recorded column.
+* **The three frameworks agree row for row in all three new cells.** No framework difference to
+  report.
 
 ## Bridge: the platform switch
 
@@ -121,6 +165,13 @@ The previous grid's own `swap_silent` cell reads **9/9 mismatch, 9/9 claimed**, 
 * The two-writer rule is **simulated in-process**: the delivery path references an external spec
   file instead of authoring the check, but the same process runs both. Organisational separation
   (as in the audit regimes the article cites) is not something a single harness can demonstrate.
+* The per-check receipt's `check_results` are computed by the same module that builds the
+  receipt, so a verifier that fabricates the clause results (rather than echoing the asserted
+  verdict) is **not measured** — the derivation only discriminates when the results come from a
+  real execution, which `real_derived` shows but a fabricating stub does not face.
+* The good-control guard fires **after** the negative-control guard in the guard order, so a cell
+  that fails both controls records the negative one; `real_goodcontrol` never exercises a run
+  where the good control is the only guard that could fire.
 * The predicate is a single declared check for one artifact type. The grid measures *whether a
   check ran and could fail*, not whether the predicate is the right one.
 * The witness cell's stub fabricates an **empty** violation list. A stub that fabricates a
