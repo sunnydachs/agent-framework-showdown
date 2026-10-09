@@ -55,9 +55,13 @@ def build_draft() -> str:
 def verify_draft() -> str:
     """Verify the draft that is queued for delivery. Takes no arguments."""
     verified, witness, executed = vq.run_verifier(RECORD, _STATE["draft"], FAKE)
-    _STATE["receipt"] = vq.build_receipt(verified, witness, _STATE["draft"], executed)
+    _STATE["receipt"] = vq.build_receipt(verified, witness, _STATE["draft"], executed,
+                                         record=RECORD, fake=FAKE)
     if vq.CONTROL == "on":
         _STATE["control"] = vq.run_negative_control(RECORD, FAKE)
+    if vq.CONTROL == "good":
+        _STATE["control"] = vq.run_negative_control(RECORD, FAKE)
+        _STATE["good_control"] = vq.run_positive_control(RECORD, FAKE)
     return json.dumps(_STATE["receipt"])
 
 
@@ -73,7 +77,8 @@ def deliver_draft() -> str:
                                       "artifact yet. Call verify_draft(), then "
                                       "deliver_draft().")})
     delivered, status, reason, guard = vq.evaluate_delivery(
-        _STATE["draft"], _STATE["receipt"], _STATE["control"])
+        _STATE["draft"], _STATE["receipt"], _STATE["control"],
+        _STATE.get("good_control"))
     _STATE["delivery"] = {"delivered": delivered, "status": status,
                           "reason": reason, "guard": guard}
     if not delivered:
@@ -139,7 +144,8 @@ verdict = vq.summarize(RECORD, _STATE["draft"], FAKE, _STATE["receipt"],
                        _STATE["control"],
                        _STATE["delivery"] or {"delivered": False,
                                               "status": "not_attempted",
-                                              "guard": "none"})
+                                              "guard": "none"},
+                       _STATE.get("good_control"))
 verdict.update({"cell": CELL, "verifier": vq.VERIFIER, "receipt_mode": vq.RECEIPT,
                 "control_mode": vq.CONTROL, "family": FAMILY, "seed": SEED,
                 "run_label": RUN_LABEL})

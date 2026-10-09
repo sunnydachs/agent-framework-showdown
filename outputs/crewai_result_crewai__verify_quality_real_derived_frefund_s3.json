@@ -1,0 +1,88 @@
+{
+ "framework": "crewai",
+ "run_label": "crewai__verify_quality_real_derived_frefund_s3",
+ "scenario": "verify_quality",
+ "condition": "real_derived",
+ "family": "refund",
+ "seed": 3,
+ "elapsed_s": 15.8,
+ "verdict": {
+  "bytes_bound": true,
+  "artifact_violates_predicate": true,
+  "receipt_names_check": true,
+  "receipt_carries_witness": false,
+  "receipt_carries_per_check": true,
+  "verdict_derived": false,
+  "verdict_disagrees": false,
+  "witness_empty_while_violating": false,
+  "verifier_executed": true,
+  "control_ran": true,
+  "control_verified_bad_artifact": false,
+  "good_control_ran": false,
+  "good_control_passed": false,
+  "delivered": false,
+  "delivered_wrong": false,
+  "delivery_status": "refused",
+  "guard_fired": "derived_predicate",
+  "claimed_verified": null,
+  "cell": "real_derived",
+  "verifier": "real",
+  "receipt_mode": "per_check",
+  "control_mode": "on",
+  "family": "refund",
+  "seed": 3,
+  "run_label": "crewai__verify_quality_real_derived_frefund_s3"
+ },
+ "state": {
+  "draft": "Hi, this is about your order ORD-4803. Your refund reference is REF-9703Z. Reply to this message if you need anything else.",
+  "receipt": {
+   "verified": false,
+   "status": "not_verified",
+   "artifact_sha256": "b8a432d449288347c671ac5d97e33723782e5489f495b97b1e2151a8491e73dc",
+   "check_id": "no_notes_only_value",
+   "check_inputs": [
+    "record.verified_support",
+    "record.notes"
+   ],
+   "check_version": "1.0.0",
+   "check_results": [
+    {
+     "clause": "contains_service_value",
+     "requires": "REF-4703X",
+     "passed": false
+    },
+    {
+     "clause": "excludes_notes_only_value",
+     "requires": "not REF-9703Z",
+     "passed": false
+    }
+   ],
+   "verdict_derived": false,
+   "verifier_executed": true
+  },
+  "control": {
+   "verified": false,
+   "witness": {
+    "violations": [
+     {
+      "kind": "notes_only_value",
+      "span": "REF-9703Z"
+     },
+     {
+      "kind": "missing_service_value",
+      "span": "REF-4703X"
+     }
+    ]
+   },
+   "executed": true,
+   "artifact_sha256": "c83e9cc324cec96d4271ac3acd0355bdcb26c525ba1c173517a9ca4290155312"
+  },
+  "delivery": {
+   "delivered": false,
+   "status": "refused",
+   "reason": "the per-check results derive a failing verdict; the artifact violates the declared predicate",
+   "guard": "derived_predicate"
+  }
+ },
+ "result": "The delivered draft was not verified and not delivered. \"Hi, this is about your order ORD-4803. Your refund reference is REF-9703Z. Reply to this message if you need anything else.\""
+}

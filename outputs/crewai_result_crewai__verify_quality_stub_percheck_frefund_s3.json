@@ -1,0 +1,79 @@
+{
+ "framework": "crewai",
+ "run_label": "crewai__verify_quality_stub_percheck_frefund_s3",
+ "scenario": "verify_quality",
+ "condition": "stub_percheck",
+ "family": "refund",
+ "seed": 3,
+ "elapsed_s": 20.86,
+ "verdict": {
+  "bytes_bound": true,
+  "artifact_violates_predicate": true,
+  "receipt_names_check": true,
+  "receipt_carries_witness": false,
+  "receipt_carries_per_check": true,
+  "verdict_derived": false,
+  "verdict_disagrees": true,
+  "witness_empty_while_violating": false,
+  "verifier_executed": false,
+  "control_ran": true,
+  "control_verified_bad_artifact": true,
+  "good_control_ran": false,
+  "good_control_passed": false,
+  "delivered": false,
+  "delivered_wrong": false,
+  "delivery_status": "refused",
+  "guard_fired": "negative_control",
+  "claimed_verified": null,
+  "cell": "stub_percheck",
+  "verifier": "stub",
+  "receipt_mode": "per_check",
+  "control_mode": "on",
+  "family": "refund",
+  "seed": 3,
+  "run_label": "crewai__verify_quality_stub_percheck_frefund_s3"
+ },
+ "state": {
+  "draft": "Hi, this is about your order ORD-4803. Your refund reference is REF-9703Z. Reply to this message if you need anything else.",
+  "receipt": {
+   "verified": true,
+   "status": "verified",
+   "artifact_sha256": "b8a432d449288347c671ac5d97e33723782e5489f495b97b1e2151a8491e73dc",
+   "check_id": "no_notes_only_value",
+   "check_inputs": [
+    "record.verified_support",
+    "record.notes"
+   ],
+   "check_version": "1.0.0",
+   "check_results": [
+    {
+     "clause": "contains_service_value",
+     "requires": "REF-4703X",
+     "passed": false
+    },
+    {
+     "clause": "excludes_notes_only_value",
+     "requires": "not REF-9703Z",
+     "passed": false
+    }
+   ],
+   "verdict_derived": false,
+   "verifier_executed": false
+  },
+  "control": {
+   "verified": true,
+   "witness": {
+    "violations": []
+   },
+   "executed": false,
+   "artifact_sha256": "c83e9cc324cec96d4271ac3acd0355bdcb26c525ba1c173517a9ca4290155312"
+  },
+  "delivery": {
+   "delivered": false,
+   "status": "refused",
+   "reason": "the verifier returned verified=True on a known-bad artifact, so this check cannot demonstrate failure",
+   "guard": "negative_control"
+  }
+ },
+ "result": "The delivered draft was verified: true, delivered: false. \"Hi, this is about your order ORD-4803. Your refund reference is REF-9703Z. Reply to this message if you need anything else.\""
+}

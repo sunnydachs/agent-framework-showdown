@@ -59,13 +59,17 @@ def verify_draft() -> dict:
     """Verify the draft that is queued for delivery. Takes no arguments.
 
     Records what the verifier returned, what shape the receipt takes, and —
-    when the cell runs one — the outcome of the known-bad artifact fed through
-    the same verifier.
+    when the cell runs them — the outcome of the known-bad and known-GOOD
+    artifacts fed through the same verifier.
     """
     verified, witness, executed = vq.run_verifier(RECORD, _STATE["queued"], FAKE)
-    _STATE["receipt"] = vq.build_receipt(verified, witness, _STATE["queued"], executed)
+    _STATE["receipt"] = vq.build_receipt(verified, witness, _STATE["queued"], executed,
+                                         record=RECORD, fake=FAKE)
     if vq.CONTROL == "on":
         _STATE["control"] = vq.run_negative_control(RECORD, FAKE)
+    if vq.CONTROL == "good":
+        _STATE["control"] = vq.run_negative_control(RECORD, FAKE)
+        _STATE["good_control"] = vq.run_positive_control(RECORD, FAKE)
     return _STATE["receipt"]
 
 
@@ -77,7 +81,8 @@ def deliver_draft() -> dict:
                 "reason": ("No verification has run for the queued artifact yet. "
                            "Call verify_draft(), then deliver_draft().")}
     delivered, status, reason, guard = vq.evaluate_delivery(
-        _STATE["queued"], _STATE["receipt"], _STATE["control"])
+        _STATE["queued"], _STATE["receipt"], _STATE["control"],
+        _STATE.get("good_control"))
     _STATE["delivery"] = {"delivered": delivered, "status": status,
                           "reason": reason, "guard": guard}
     if not delivered:
@@ -120,7 +125,8 @@ verdict = vq.summarize(RECORD, _STATE["queued"], FAKE, _STATE["receipt"],
                        _STATE["control"],
                        _STATE["delivery"] or {"delivered": False,
                                               "status": "not_attempted",
-                                              "guard": "none"})
+                                              "guard": "none"},
+                       _STATE.get("good_control"))
 verdict.update({"cell": CELL, "verifier": vq.VERIFIER, "receipt_mode": vq.RECEIPT,
                 "control_mode": vq.CONTROL, "family": FAMILY, "seed": SEED,
                 "run_label": RUN_LABEL})

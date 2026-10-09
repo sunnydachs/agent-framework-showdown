@@ -49,6 +49,7 @@ class VQState(TypedDict):
     draft: str
     receipt: dict
     control: dict
+    good_control: dict
     deliver_result: dict
     answer: str
 
@@ -61,16 +62,21 @@ def build_node(state: VQState) -> dict:
 def verify_node(state: VQState) -> dict:
     draft = state["draft"]
     verified, witness, executed = vq.run_verifier(RECORD, draft, FAKE)
-    out = {"receipt": vq.build_receipt(verified, witness, draft, executed)}
+    out = {"receipt": vq.build_receipt(verified, witness, draft, executed,
+                                       record=RECORD, fake=FAKE)}
     if vq.CONTROL == "on":
         out["control"] = vq.run_negative_control(RECORD, FAKE)
+    if vq.CONTROL == "good":
+        out["control"] = vq.run_negative_control(RECORD, FAKE)
+        out["good_control"] = vq.run_positive_control(RECORD, FAKE)
     return out
 
 
 def deliver_node(state: VQState) -> dict:
     """The consumer step. Every guard is code; the model gets no vote."""
     delivered, status, reason, guard = vq.evaluate_delivery(
-        state["draft"], state["receipt"], state.get("control"))
+        state["draft"], state["receipt"], state.get("control"),
+        state.get("good_control"))
     if not delivered:
         return {"deliver_result": {
             "delivered": False, "status": "refused_terminal", "guard": guard,
@@ -108,7 +114,8 @@ graph = workflow.compile()
 
 t0 = time.time()
 final = graph.invoke({"customer": f"Order {RECORD['order']['order_id']}", "draft": "",
-                      "receipt": {}, "control": None, "deliver_result": {},
+                      "receipt": {}, "control": None, "good_control": None,
+                      "deliver_result": {},
                       "answer": ""})
 elapsed = time.time() - t0
 
@@ -116,7 +123,8 @@ verdict = vq.summarize(RECORD, final["draft"], FAKE, final["receipt"],
                        final.get("control"),
                        {"delivered": final["deliver_result"].get("delivered", False),
                         "status": final["deliver_result"].get("status", "not_attempted"),
-                        "guard": final["deliver_result"].get("guard", "none")})
+                        "guard": final["deliver_result"].get("guard", "none")},
+                       final.get("good_control"))
 verdict.update({"cell": CELL, "verifier": vq.VERIFIER, "receipt_mode": vq.RECEIPT,
                 "control_mode": vq.CONTROL, "family": FAMILY, "seed": SEED,
                 "run_label": RUN_LABEL})

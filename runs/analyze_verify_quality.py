@@ -68,10 +68,15 @@ for f in sorted(glob.glob(os.path.join(ROOT, "outputs", "*_result_*__verify_qual
         "artifact_violates_predicate": bool(v.get("artifact_violates_predicate")),
         "receipt_names_check": bool(v.get("receipt_names_check")),
         "receipt_carries_witness": bool(v.get("receipt_carries_witness")),
+        "receipt_carries_per_check": bool(v.get("receipt_carries_per_check")),
+        "verdict_derived": v.get("verdict_derived"),
+        "verdict_disagrees": bool(v.get("verdict_disagrees")),
         "witness_empty_while_violating": bool(v.get("witness_empty_while_violating")),
         "verifier_executed": bool(v.get("verifier_executed")),
         "control_ran": bool(v.get("control_ran")),
         "control_verified_bad_artifact": bool(v.get("control_verified_bad_artifact")),
+        "good_control_ran": bool(v.get("good_control_ran")),
+        "good_control_passed": bool(v.get("good_control_passed")),
         "delivered": bool(v.get("delivered")),
         "delivered_wrong": bool(v.get("delivered_wrong")),
         "delivery_status": v.get("delivery_status", ""),
@@ -85,8 +90,11 @@ for r in rows:
     key = f"{r['framework']}/{r['cell']}"
     a = agg.setdefault(key, {"n": 0, "bytes_bound": 0, "artifact_violates": 0,
                              "receipt_names_check": 0, "receipt_carries_witness": 0,
-                             "witness_empty_while_violating": 0, "verifier_executed": 0,
+                             "receipt_carries_per_check": 0, "verdict_derived_false": 0,
+                             "verdict_disagrees": 0, "witness_empty_while_violating": 0,
+                             "verifier_executed": 0,
                              "control_ran": 0, "control_verified_bad": 0,
+                             "good_control_ran": 0, "good_control_failed": 0,
                              "delivered": 0, "delivered_wrong": 0, "refused": 0,
                              "claims_verified": 0, "guards": collections.Counter()})
     a["n"] += 1
@@ -94,13 +102,18 @@ for r in rows:
                    ("artifact_violates", "artifact_violates_predicate"),
                    ("receipt_names_check", "receipt_names_check"),
                    ("receipt_carries_witness", "receipt_carries_witness"),
+                   ("receipt_carries_per_check", "receipt_carries_per_check"),
+                   ("verdict_disagrees", "verdict_disagrees"),
                    ("witness_empty_while_violating", "witness_empty_while_violating"),
                    ("verifier_executed", "verifier_executed"),
                    ("control_ran", "control_ran"),
                    ("control_verified_bad", "control_verified_bad_artifact"),
+                   ("good_control_ran", "good_control_ran"),
                    ("delivered", "delivered"), ("delivered_wrong", "delivered_wrong"),
                    ("claims_verified", "claims_verified")):
         a[k] += 1 if r[src] else 0
+    a["verdict_derived_false"] += 1 if r["verdict_derived"] is False else 0
+    a["good_control_failed"] += 1 if (r["good_control_ran"] and not r["good_control_passed"]) else 0
     a["refused"] += 0 if r["delivered"] else 1
     a["guards"][r["guard_fired"]] += 1
 
@@ -114,8 +127,13 @@ for c in CELL_ORDER:
         "bytes_bound": sum(1 for r in ds if r["bytes_bound"]),
         "artifact_violates": sum(1 for r in ds if r["artifact_violates_predicate"]),
         "verifier_executed": sum(1 for r in ds if r["verifier_executed"]),
+        "receipt_carries_per_check": sum(1 for r in ds if r["receipt_carries_per_check"]),
+        "verdict_derived_false": sum(1 for r in ds if r["verdict_derived"] is False),
+        "verdict_disagrees": sum(1 for r in ds if r["verdict_disagrees"]),
         "control_ran": sum(1 for r in ds if r["control_ran"]),
         "control_verified_bad": sum(1 for r in ds if r["control_verified_bad_artifact"]),
+        "good_control_ran": sum(1 for r in ds if r["good_control_ran"]),
+        "good_control_failed": sum(1 for r in ds if r["good_control_ran"] and not r["good_control_passed"]),
         "delivered": sum(1 for r in ds if r["delivered"]),
         "delivered_wrong": sum(1 for r in ds if r["delivered_wrong"]),
         "claims_verified": sum(1 for r in ds if r["claims_verified"]),
@@ -199,10 +217,11 @@ json.dump(report, open(OUT, "w"), ensure_ascii=False, indent=1)
 
 print(f"runs: {len(rows)}  |  manifest: {manifest_ok}/{manifest_n} exited 0")
 print(f"{'cell':16} {'n':>2} {'bound':>5} {'viol':>4} {'exec':>4} {'ctrl':>4} "
-      f"{'ctrl_bad':>8} {'deliv':>5} {'WRONG':>5} {'claims':>6}  guards")
+      f"{'ctrl_bad':>8} {'good':>5} {'goodbad':>7} {'deliv':>5} {'WRONG':>5} {'claims':>6}  guards")
 for c, a in cells.items():
     print(f"{c:16} {a['n']:>2} {a['bytes_bound']:>5} {a['artifact_violates']:>4} "
           f"{a['verifier_executed']:>4} {a['control_ran']:>4} {a['control_verified_bad']:>8} "
+          f"{a['good_control_ran']:>5} {a['good_control_failed']:>7} "
           f"{a['delivered']:>5} {a['delivered_wrong']:>5} {a['claims_verified']:>6}  {a['guards']}")
 if bridge["n"]:
     print(f"\nbridge (swap_silent on this provider): {bridge['n']} runs, "
